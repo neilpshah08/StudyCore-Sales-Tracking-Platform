@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { StreakDisplay } from "@/components/dashboard/streak-display"
 import { GoalSetter } from "@/components/dashboard/goal-setter"
-import { DailyActivityForm } from "@/components/dashboard/daily-activity-form"
+import { TallyDashboard } from "@/components/dashboard/tally-dashboard"
 import { Scorecard } from "@/components/dashboard/scorecard"
 import { Leaderboard } from "@/components/dashboard/leaderboard"
 import { ActivityHistory } from "@/components/dashboard/activity-history"
@@ -287,16 +287,18 @@ export default async function DashboardPage() {
           existingGoals={goals}
         />
 
-        {/* 3. Daily Activity Logger */}
-        <DailyActivityForm
+        {/* 3. Live Tally Dashboard */}
+        <TallyDashboard
           userId={profile.id}
           role={role}
           existingData={todayActivity}
           date={todayStr}
           dealStats={todayDealStats}
+          weekData={weekData}
+          benchmarks={benchmarks}
         />
 
-        {/* 4. Scorecard + Leaderboard */}
+        {/* 4. Full Scorecard (week/month tabs) + Leaderboard */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Scorecard
             role={role}
