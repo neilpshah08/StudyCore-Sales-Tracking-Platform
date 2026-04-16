@@ -40,6 +40,8 @@ export function GhlIntegrationPage() {
   const [syncResult, setSyncResult] = useState<SyncResult | null>(null)
   const [registeringWebhook, setRegisteringWebhook] = useState(false)
   const [webhookUrl, setWebhookUrl] = useState("")
+  const [testing, setTesting] = useState(false)
+  const [testResults, setTestResults] = useState<Record<string, { ok: boolean; error?: string; data?: unknown }> | null>(null)
 
   const fetchStatus = useCallback(async () => {
     try {
@@ -100,6 +102,24 @@ export function GhlIntegrationPage() {
       toast({ title: "Failed to register webhook", variant: "destructive" })
     } finally {
       setRegisteringWebhook(false)
+    }
+  }
+
+  async function handleTestEndpoints() {
+    setTesting(true)
+    setTestResults(null)
+    try {
+      const res = await fetch("/api/admin/ghl/test")
+      if (res.ok) {
+        const data = await res.json()
+        setTestResults(data)
+      } else {
+        toast({ title: "Test failed", variant: "destructive" })
+      }
+    } catch {
+      toast({ title: "Test failed", variant: "destructive" })
+    } finally {
+      setTesting(false)
     }
   }
 
@@ -389,6 +409,64 @@ export function GhlIntegrationPage() {
             </div>
           )}
         </CardContent>
+      </Card>
+
+      {/* Endpoint Diagnostics */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5" />
+              API Diagnostics
+            </CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleTestEndpoints}
+              disabled={testing || !status?.connected}
+            >
+              {testing ? (
+                <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Testing...</>
+              ) : (
+                "Test All Endpoints"
+              )}
+            </Button>
+          </div>
+        </CardHeader>
+        {testResults && (
+          <CardContent>
+            <div className="space-y-2">
+              {Object.entries(testResults).map(([endpoint, result]) => (
+                <div
+                  key={endpoint}
+                  className={cn(
+                    "flex items-start justify-between p-3 rounded-lg border",
+                    result.ok ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"
+                  )}
+                >
+                  <div>
+                    <div className="flex items-center gap-2">
+                      {result.ok ? (
+                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <XCircle className="h-4 w-4 text-red-600" />
+                      )}
+                      <span className="font-medium capitalize">{endpoint}</span>
+                    </div>
+                    {result.error && (
+                      <p className="text-xs text-red-600 mt-1 ml-6">{result.error}</p>
+                    )}
+                  </div>
+                  {result.data != null && (
+                    <code className="text-xs bg-white/50 px-2 py-1 rounded max-w-xs truncate">
+                      {String(JSON.stringify(result.data))}
+                    </code>
+                  )}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        )}
       </Card>
 
       {/* Custom Field Mapping Reference */}

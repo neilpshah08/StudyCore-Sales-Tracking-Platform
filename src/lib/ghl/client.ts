@@ -54,59 +54,80 @@ export interface GhlContact {
   source: string
 }
 
-interface ContactsResponse {
+interface ContactsSearchResponse {
   contacts: GhlContact[]
-  meta: { total: number; currentPage: number; nextPage: number | null; nextPageUrl: string | null }
+  total: number
 }
 
+// Use POST /contacts/search which supports date filtering
 export async function getContacts(
   startDate?: string,
   endDate?: string,
   limit = 100
 ): Promise<GhlContact[]> {
   const locationId = getGhlLocationId()
-  const params: Record<string, string> = {
-    locationId,
-    limit: String(limit),
-  }
-  // GHL v2 uses startAfter as a Unix timestamp in milliseconds for date filtering
+
+  const filters: Record<string, unknown>[] = []
   if (startDate) {
-    params.startAfter = String(new Date(startDate).getTime())
+    filters.push({
+      field: "dateAdded",
+      operator: "after",
+      value: new Date(startDate).toISOString(),
+    })
+  }
+  if (endDate) {
+    filters.push({
+      field: "dateAdded",
+      operator: "before",
+      value: new Date(endDate).toISOString(),
+    })
   }
 
   const all: GhlContact[] = []
-  let hasMore = true
+  let page = 1
 
-  while (hasMore) {
-    const res = await ghlFetch<ContactsResponse>(
-      "/contacts/",
-      "GET",
-      undefined,
-      params
-    )
-    const contacts = res.contacts ?? []
-    all.push(...contacts)
-
-    if (res.meta?.nextPageUrl && contacts.length > 0) {
-      // Use the last contact's ID for cursor-based pagination
-      params.startAfterId = contacts[contacts.length - 1].id
-    } else {
-      hasMore = false
+  while (true) {
+    const body: Record<string, unknown> = {
+      locationId,
+      page,
+      pageLimit: limit,
+    }
+    if (filters.length > 0) {
+      body.filters = filters
     }
 
-    // Filter by endDate client-side since GHL doesn't have an endDate param
-    if (endDate) {
-      const endTs = new Date(endDate).getTime()
-      const filtered = all.filter((c) => new Date(c.dateAdded).getTime() <= endTs)
-      if (filtered.length < all.length) {
-        return filtered
+    try {
+      const res = await ghlFetch<ContactsSearchResponse>(
+        "/contacts/search",
+        "POST",
+        body
+      )
+      const contacts = res.contacts ?? []
+      all.push(...contacts)
+      if (contacts.length < limit || all.length >= (res.total || 0)) break
+      page++
+    } catch (err) {
+      // If search endpoint fails, fall back to simple list
+      if (page === 1) {
+        return await getContactsFallback(limit)
       }
+      break
     }
-
-    if (contacts.length < limit) hasMore = false
   }
 
   return all
+}
+
+// Fallback: simple GET /contacts/ without date filtering
+async function getContactsFallback(limit = 100): Promise<GhlContact[]> {
+  const locationId = getGhlLocationId()
+  const res = await ghlFetch<{ contacts: GhlContact[]; meta?: { total: number } }>(
+    "/contacts/",
+    "GET",
+    undefined,
+    { locationId, limit: String(limit) }
+  )
+  return res.contacts ?? []
 }
 
 export async function getContact(contactId: string): Promise<GhlContact> {
@@ -134,7 +155,7 @@ export interface GhlOpportunity {
 
 interface OpportunitiesResponse {
   opportunities: GhlOpportunity[]
-  meta: { total: number; currentPage: number; nextPage: number | null }
+  meta?: { total: number; currentPage: number; nextPage: number | null }
 }
 
 export async function getOpportunities(
@@ -143,29 +164,52 @@ export async function getOpportunities(
   limit = 100
 ): Promise<GhlOpportunity[]> {
   const locationId = getGhlLocationId()
-  // GHL v2 opportunities search uses location_id (snake_case)
+
+  // Try POST /opportunities/search first (newer API)
+  try {
+    const body: Record<string, unknown> = {
+      location_id: locationId,
+      pipeline_id: pipelineId || GHL_CONFIG.pipelineId,
+    }
+    if (stageId) body.pipeline_stage_id = stageId
+
+    const res = await ghlFetch<OpportunitiesResponse>(
+      "/opportunities/search",
+      "POST",
+      body
+    )
+    return res.opportunities ?? []
+  } catch {
+    // Fall back to GET /opportunities/ with query params
+  }
+
+  // Fallback: GET with query params
   const params: Record<string, string> = {
-    location_id: locationId,
+    locationId,
     limit: String(limit),
   }
-  if (pipelineId) params.pipeline_id = pipelineId
-  if (stageId) params.pipeline_stage_id = stageId
+  if (pipelineId) params.pipelineId = pipelineId
 
   const all: GhlOpportunity[] = []
   let page = 1
 
   while (true) {
     params.page = String(page)
-    const res = await ghlFetch<OpportunitiesResponse>(
-      "/opportunities/search",
-      "GET",
-      undefined,
-      params
-    )
-    const opps = res.opportunities ?? []
-    all.push(...opps)
-    if (!res.meta?.nextPage || opps.length < limit) break
-    page = res.meta.nextPage
+
+    try {
+      const res = await ghlFetch<OpportunitiesResponse>(
+        "/opportunities/",
+        "GET",
+        undefined,
+        params
+      )
+      const opps = res.opportunities ?? []
+      all.push(...opps)
+      if (!res.meta?.nextPage || opps.length < limit) break
+      page = res.meta.nextPage
+    } catch {
+      break
+    }
   }
 
   return all
@@ -251,31 +295,40 @@ export async function getAppointments(
   endDate: string
 ): Promise<GhlAppointment[]> {
   const locationId = getGhlLocationId()
+  const allAppointments: GhlAppointment[] = []
 
-  // GHL v2 requires calendarId, userId, or groupId — fetch all calendars first
-  const calendars = await getCalendars()
+  // GHL v2 requires calendarId — fetch all calendars first, then events per calendar
+  let calendars: GhlCalendar[] = []
+  try {
+    calendars = await getCalendars()
+  } catch {
+    // If calendars listing fails, return empty
+    return []
+  }
+
   if (calendars.length === 0) return []
 
-  const allAppointments: GhlAppointment[] = []
+  const startTime = new Date(startDate).toISOString()
+  const endTime = new Date(endDate).toISOString()
 
   for (const calendar of calendars) {
     try {
       const res = await ghlFetch<AppointmentsResponse>(
-        "/calendars/events",
+        `/calendars/events`,
         "GET",
         undefined,
         {
           locationId,
           calendarId: calendar.id,
-          startTime: new Date(startDate).toISOString(),
-          endTime: new Date(endDate).toISOString(),
+          startTime,
+          endTime,
         }
       )
       if (res.events) {
         allAppointments.push(...res.events)
       }
     } catch {
-      // Skip calendars that error (e.g., deleted or inaccessible)
+      // Skip individual calendar errors
     }
   }
 
@@ -372,4 +425,60 @@ export function getCustomFieldValue(
   const field = fields?.find((f) => f.id === fieldId)
   if (!field || field.value === null || field.value === undefined) return null
   return String(field.value)
+}
+
+// --- Diagnostic: test each endpoint individually ---
+
+export async function testEndpoints(): Promise<Record<string, { ok: boolean; error?: string; data?: unknown }>> {
+  const results: Record<string, { ok: boolean; error?: string; data?: unknown }> = {}
+
+  // Test location
+  try {
+    const loc = await checkConnection()
+    results.location = { ok: loc.connected, error: loc.error, data: { name: loc.locationName } }
+  } catch (err) {
+    results.location = { ok: false, error: err instanceof Error ? err.message : String(err) }
+  }
+
+  // Test contacts
+  try {
+    const contacts = await getContactsFallback(1)
+    results.contacts = { ok: true, data: { count: contacts.length } }
+  } catch (err) {
+    results.contacts = { ok: false, error: err instanceof Error ? err.message : String(err) }
+  }
+
+  // Test calendars
+  try {
+    const cals = await getCalendars()
+    results.calendars = { ok: true, data: { count: cals.length, ids: cals.map((c) => c.id) } }
+  } catch (err) {
+    results.calendars = { ok: false, error: err instanceof Error ? err.message : String(err) }
+  }
+
+  // Test pipelines
+  try {
+    const pipes = await getPipelines()
+    results.pipelines = { ok: true, data: { count: pipes.length, names: pipes.map((p) => ({ id: p.id, name: p.name, stages: p.stages?.map((s) => ({ id: s.id, name: s.name })) })) } }
+  } catch (err) {
+    results.pipelines = { ok: false, error: err instanceof Error ? err.message : String(err) }
+  }
+
+  // Test users
+  try {
+    const users = await getGhlUsers()
+    results.users = { ok: true, data: { count: users.length, names: users.map((u) => u.name) } }
+  } catch (err) {
+    results.users = { ok: false, error: err instanceof Error ? err.message : String(err) }
+  }
+
+  // Test opportunities (simple GET)
+  try {
+    const opps = await getOpportunities(GHL_CONFIG.pipelineId, undefined, 5)
+    results.opportunities = { ok: true, data: { count: opps.length } }
+  } catch (err) {
+    results.opportunities = { ok: false, error: err instanceof Error ? err.message : String(err) }
+  }
+
+  return results
 }
