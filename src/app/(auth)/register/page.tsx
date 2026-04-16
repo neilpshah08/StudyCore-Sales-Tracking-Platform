@@ -109,7 +109,7 @@ export default function RegisterPage() {
           email,
           password,
           role,
-          commission_rate: commissionRate,
+          commission_rate: commissionRate / 100,
           hire_date: hireDate,
         }),
       })
@@ -250,6 +250,9 @@ export default function RegisterPage() {
               required
               disabled={loading}
             />
+            <p className="text-xs text-muted-foreground">
+              Enter as a whole number (e.g. 5 for 5%, 10 for 10%). Stored as 0.05, 0.10, etc.
+            </p>
           </div>
 
           {/* Hire Date */}

@@ -97,7 +97,9 @@ export async function POST(request: Request) {
       role,
       status: 'active',
       hire_date: hire_date || new Date().toISOString().split('T')[0],
-      commission_rate: commission_rate ?? (role === 'setter' ? 5 : 10),
+      commission_rate: commission_rate != null
+        ? (commission_rate > 1 ? commission_rate / 100 : commission_rate)
+        : (role === 'setter' ? 0.05 : 0.10),
     })
 
     if (insertError) {
