@@ -15,14 +15,16 @@ async function ghlFetch<T>(
     }
   }
 
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${getGhlApiKey()}`,
+    Version: GHL_CONFIG.apiVersion,
+    Accept: "application/json",
+  }
+  if (body) headers["Content-Type"] = "application/json"
+
   const res = await fetch(url.toString(), {
     method,
-    headers: {
-      Authorization: `Bearer ${getGhlApiKey()}`,
-      Version: GHL_CONFIG.apiVersion,
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
+    headers,
     body: body ? JSON.stringify(body) : undefined,
   })
 
@@ -31,7 +33,9 @@ async function ghlFetch<T>(
     throw new Error(`GHL API ${method} ${path} failed (${res.status}): ${text}`)
   }
 
-  return res.json()
+  const text = await res.text()
+  if (!text) return {} as T
+  return JSON.parse(text)
 }
 
 // --- Contacts ---
@@ -52,7 +56,7 @@ export interface GhlContact {
 
 interface ContactsResponse {
   contacts: GhlContact[]
-  meta: { total: number; currentPage: number; nextPage: number | null }
+  meta: { total: number; currentPage: number; nextPage: number | null; nextPageUrl: string | null }
 }
 
 export async function getContacts(
@@ -61,23 +65,45 @@ export async function getContacts(
   limit = 100
 ): Promise<GhlContact[]> {
   const locationId = getGhlLocationId()
-  const params: Record<string, string> = { locationId, limit: String(limit) }
-  if (startDate) params.startAfter = new Date(startDate).toISOString()
-  if (endDate) params.endAt = new Date(endDate).toISOString()
+  const params: Record<string, string> = {
+    locationId,
+    limit: String(limit),
+  }
+  // GHL v2 uses startAfter as a Unix timestamp in milliseconds for date filtering
+  if (startDate) {
+    params.startAfter = String(new Date(startDate).getTime())
+  }
 
   const all: GhlContact[] = []
-  let page = 1
+  let hasMore = true
 
-  while (true) {
+  while (hasMore) {
     const res = await ghlFetch<ContactsResponse>(
       "/contacts/",
       "GET",
       undefined,
-      { ...params, page: String(page) }
+      params
     )
-    all.push(...res.contacts)
-    if (!res.meta.nextPage || all.length >= res.meta.total) break
-    page = res.meta.nextPage
+    const contacts = res.contacts ?? []
+    all.push(...contacts)
+
+    if (res.meta?.nextPageUrl && contacts.length > 0) {
+      // Use the last contact's ID for cursor-based pagination
+      params.startAfterId = contacts[contacts.length - 1].id
+    } else {
+      hasMore = false
+    }
+
+    // Filter by endDate client-side since GHL doesn't have an endDate param
+    if (endDate) {
+      const endTs = new Date(endDate).getTime()
+      const filtered = all.filter((c) => new Date(c.dateAdded).getTime() <= endTs)
+      if (filtered.length < all.length) {
+        return filtered
+      }
+    }
+
+    if (contacts.length < limit) hasMore = false
   }
 
   return all
@@ -117,22 +143,28 @@ export async function getOpportunities(
   limit = 100
 ): Promise<GhlOpportunity[]> {
   const locationId = getGhlLocationId()
-  const params: Record<string, string> = { locationId, limit: String(limit) }
-  if (pipelineId) params.pipelineId = pipelineId
-  if (stageId) params.pipelineStageId = stageId
+  // GHL v2 opportunities search uses location_id (snake_case)
+  const params: Record<string, string> = {
+    location_id: locationId,
+    limit: String(limit),
+  }
+  if (pipelineId) params.pipeline_id = pipelineId
+  if (stageId) params.pipeline_stage_id = stageId
 
   const all: GhlOpportunity[] = []
   let page = 1
 
   while (true) {
+    params.page = String(page)
     const res = await ghlFetch<OpportunitiesResponse>(
       "/opportunities/search",
       "GET",
       undefined,
-      { ...params, page: String(page) }
+      params
     )
-    all.push(...res.opportunities)
-    if (!res.meta.nextPage || all.length >= res.meta.total) break
+    const opps = res.opportunities ?? []
+    all.push(...opps)
+    if (!res.meta?.nextPage || opps.length < limit) break
     page = res.meta.nextPage
   }
 
@@ -168,10 +200,33 @@ export async function getPipelines(): Promise<GhlPipeline[]> {
     undefined,
     { locationId }
   )
-  return res.pipelines
+  return res.pipelines ?? []
 }
 
-// --- Calendars / Appointments ---
+// --- Calendars ---
+
+export interface GhlCalendar {
+  id: string
+  locationId: string
+  name: string
+}
+
+interface CalendarsResponse {
+  calendars: GhlCalendar[]
+}
+
+export async function getCalendars(): Promise<GhlCalendar[]> {
+  const locationId = getGhlLocationId()
+  const res = await ghlFetch<CalendarsResponse>(
+    "/calendars/",
+    "GET",
+    undefined,
+    { locationId }
+  )
+  return res.calendars ?? []
+}
+
+// --- Appointments ---
 
 export interface GhlAppointment {
   id: string
@@ -179,7 +234,7 @@ export interface GhlAppointment {
   locationId: string
   contactId: string
   title: string
-  status: string // "confirmed" | "showed" | "noshow" | "cancelled" | "invalid"
+  status: string
   appointmentStatus: string
   assignedUserId: string
   startTime: string
@@ -196,17 +251,35 @@ export async function getAppointments(
   endDate: string
 ): Promise<GhlAppointment[]> {
   const locationId = getGhlLocationId()
-  const res = await ghlFetch<AppointmentsResponse>(
-    "/calendars/events",
-    "GET",
-    undefined,
-    {
-      locationId,
-      startTime: new Date(startDate).toISOString(),
-      endTime: new Date(endDate).toISOString(),
+
+  // GHL v2 requires calendarId, userId, or groupId — fetch all calendars first
+  const calendars = await getCalendars()
+  if (calendars.length === 0) return []
+
+  const allAppointments: GhlAppointment[] = []
+
+  for (const calendar of calendars) {
+    try {
+      const res = await ghlFetch<AppointmentsResponse>(
+        "/calendars/events",
+        "GET",
+        undefined,
+        {
+          locationId,
+          calendarId: calendar.id,
+          startTime: new Date(startDate).toISOString(),
+          endTime: new Date(endDate).toISOString(),
+        }
+      )
+      if (res.events) {
+        allAppointments.push(...res.events)
+      }
+    } catch {
+      // Skip calendars that error (e.g., deleted or inaccessible)
     }
-  )
-  return res.events ?? []
+  }
+
+  return allAppointments
 }
 
 // --- Webhooks ---
