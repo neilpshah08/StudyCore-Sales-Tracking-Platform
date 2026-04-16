@@ -196,9 +196,16 @@ export function RepDetail({ rep, performance, callReviews, deals, notes, weeklyD
                 {rep.status}
               </Badge>
             </div>
-            <Button variant="outline" size="sm" onClick={() => setEditOpen(true)}>
-              <Pencil className="h-4 w-4 mr-1" /> Edit
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => setEditOpen(true)}>
+                <Pencil className="h-4 w-4 mr-1" /> Quick Edit
+              </Button>
+              <Button variant="default" size="sm" asChild>
+                <a href={`/admin/reps/${rep.id}/edit`}>
+                  Full Edit
+                </a>
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>

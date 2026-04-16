@@ -180,13 +180,14 @@ export function RepList({ reps }: RepListProps) {
                 sortKeyName="commission_rate"
               />
               <TableHead>Alerts</TableHead>
+              <TableHead></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredAndSorted.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={8}
                   className="text-center text-muted-foreground"
                 >
                   No reps found matching the current filters.
@@ -250,6 +251,14 @@ export function RepList({ reps }: RepListProps) {
                         PIP/Warning
                       </Badge>
                     )}
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      href={`/admin/reps/${rep.id}/edit`}
+                      className="text-sm text-blue-600 hover:underline"
+                    >
+                      Edit
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))
