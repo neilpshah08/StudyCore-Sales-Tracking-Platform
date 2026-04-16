@@ -55,7 +55,7 @@ const adminNavItems: NavItem[] = [
   { label: "Reps", href: "/admin/reps", icon: Users },
   { label: "Deals", href: "/admin/deals", icon: Handshake },
   { label: "Commissions", href: "/admin/commissions", icon: Percent },
-  { label: "Call QA", href: "/admin/call-qa", icon: PhoneCall },
+  { label: "Call QA", href: "/admin/qa", icon: PhoneCall },
   { label: "Fulfillment", href: "/admin/fulfillment", icon: Package },
   { label: "Refunds", href: "/admin/refunds", icon: RotateCcw },
   {

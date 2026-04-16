@@ -134,7 +134,7 @@ export default async function DashboardPage() {
   ] = await Promise.all([
     // Today's activity
     supabase
-      .from("daily_activities")
+      .from("daily_activity")
       .select("*")
       .eq("user_id", profile.id)
       .eq("date", todayStr)
@@ -142,7 +142,7 @@ export default async function DashboardPage() {
 
     // This week's activities
     supabase
-      .from("daily_activities")
+      .from("daily_activity")
       .select("*")
       .eq("user_id", profile.id)
       .gte("date", weekStart)
@@ -151,7 +151,7 @@ export default async function DashboardPage() {
 
     // This month's activities
     supabase
-      .from("daily_activities")
+      .from("daily_activity")
       .select("*")
       .eq("user_id", profile.id)
       .gte("date", monthStart)
@@ -160,7 +160,7 @@ export default async function DashboardPage() {
 
     // Streak data (last 90 days)
     supabase
-      .from("daily_activities")
+      .from("daily_activity")
       .select("date")
       .eq("user_id", profile.id)
       .gte("date", ninetyDaysAgoStr)
@@ -169,7 +169,7 @@ export default async function DashboardPage() {
 
     // History data (last 30 entries)
     supabase
-      .from("daily_activities")
+      .from("daily_activity")
       .select("*")
       .eq("user_id", profile.id)
       .gte("date", thirtyDaysAgoStr)
@@ -192,7 +192,7 @@ export default async function DashboardPage() {
 
     // Team activities this week for leaderboard
     supabase
-      .from("daily_activities")
+      .from("daily_activity")
       .select("*")
       .gte("date", weekStart)
       .lte("date", todayStr),

@@ -84,7 +84,7 @@ export default async function AdminCommissionsPage() {
         .order("min_close_rate", { ascending: true, nullsFirst: true }),
 
       supabase
-        .from("audit_logs")
+        .from("audit_log")
         .select("*")
         .eq("action", "payout_processed")
         .order("created_at", { ascending: false })

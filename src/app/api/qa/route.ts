@@ -257,7 +257,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Create audit log entry
-      await supabase.from("audit_logs").insert({
+      await supabase.from("audit_log").insert({
         user_id: user.id,
         action: "create",
         entity_type: "call_review",

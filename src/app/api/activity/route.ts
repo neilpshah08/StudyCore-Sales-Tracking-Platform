@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     const userId = searchParams.get("userId") || user.id
 
     let query = supabase
-      .from("daily_activities")
+      .from("daily_activity")
       .select("*")
       .eq("user_id", userId)
       .order("date", { ascending: false })
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
 
     // Upsert: insert or update based on user_id + date unique constraint
     const { data, error } = await supabase
-      .from("daily_activities")
+      .from("daily_activity")
       .upsert(activityData, {
         onConflict: "user_id,date",
       })

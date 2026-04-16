@@ -100,7 +100,7 @@ export function QuickActions() {
       </Button>
 
       <Button variant="outline" asChild>
-        <Link href="/admin/call-qa?action=new">
+        <Link href="/admin/qa?action=new">
           <PhoneCall className="mr-2 h-4 w-4" />
           Score a Call
         </Link>

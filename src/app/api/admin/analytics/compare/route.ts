@@ -57,13 +57,13 @@ export async function GET(request: NextRequest) {
         .eq("id", rep2Id)
         .single(),
       supabase
-        .from("daily_activities")
+        .from("daily_activity")
         .select("*")
         .eq("user_id", rep1Id)
         .gte("date", startDate)
         .lte("date", endDate),
       supabase
-        .from("daily_activities")
+        .from("daily_activity")
         .select("*")
         .eq("user_id", rep2Id)
         .gte("date", startDate)

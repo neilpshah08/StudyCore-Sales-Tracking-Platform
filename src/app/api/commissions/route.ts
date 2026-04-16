@@ -160,7 +160,7 @@ export async function GET() {
 
     // Fetch payout log from audit_logs
     const { data: payoutLogs } = await supabase
-      .from("audit_logs")
+      .from("audit_log")
       .select("*")
       .eq("action", "payout_processed")
       .order("created_at", { ascending: false })
@@ -275,7 +275,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create audit log entry
-    await supabase.from("audit_logs").insert({
+    await supabase.from("audit_log").insert({
       user_id: user.id,
       action: "payout_processed",
       entity_type: "payout",

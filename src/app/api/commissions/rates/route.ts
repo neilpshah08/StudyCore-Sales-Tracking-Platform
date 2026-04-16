@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Audit log
-    await supabase.from("audit_logs").insert({
+    await supabase.from("audit_log").insert({
       user_id: user.id,
       action: "create",
       entity_type: "commission_rate",
@@ -175,7 +175,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Audit log
-    await supabase.from("audit_logs").insert({
+    await supabase.from("audit_log").insert({
       user_id: user.id,
       action: "update",
       entity_type: "commission_rate",

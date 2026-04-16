@@ -52,7 +52,7 @@ export default async function AdminRepDetailPage({ params }: PageProps) {
         const twelveWeeksAgo = new Date()
         twelveWeeksAgo.setDate(twelveWeeksAgo.getDate() - 84)
         return supabase
-          .from("daily_activities")
+          .from("daily_activity")
           .select("*")
           .eq("user_id", id)
           .gte("date", twelveWeeksAgo.toISOString().split("T")[0])

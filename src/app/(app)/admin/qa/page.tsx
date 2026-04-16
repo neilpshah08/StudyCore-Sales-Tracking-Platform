@@ -38,66 +38,46 @@ export default async function AdminQAPage() {
   await requireAdmin()
   const supabase = await createClient()
 
-  // Fetch all call reviews with rep and reviewer names
-  const { data: rawReviews } = await supabase
-    .from("call_reviews")
-    .select(
-      `
-      *,
-      rep:users!call_reviews_rep_id_fkey(full_name, role),
-      reviewer:users!call_reviews_reviewed_by_fkey(full_name)
-    `
-    )
-    .order("date", { ascending: false })
+  // Fetch reviews and users in parallel
+  const [reviewsResult, usersResult] = await Promise.all([
+    supabase
+      .from("call_reviews")
+      .select("*")
+      .order("date", { ascending: false }),
+    supabase
+      .from("users")
+      .select("id, full_name, role")
+      .in("role", ["admin", "setter", "closer"]),
+  ])
 
-  const reviews: ReviewWithNames[] = (rawReviews ?? []).map((r) => ({
+  const userMap = new Map<string, { full_name: string; role: string }>()
+  for (const u of usersResult.data ?? []) {
+    userMap.set(u.id, { full_name: u.full_name, role: u.role })
+  }
+
+  const reviews: ReviewWithNames[] = (reviewsResult.data ?? []).map((r) => ({
     ...r,
-    rep_name:
-      r.rep && typeof r.rep === "object" && "full_name" in r.rep
-        ? (r.rep as { full_name: string }).full_name
-        : null,
-    rep_role:
-      r.rep && typeof r.rep === "object" && "role" in r.rep
-        ? (r.rep as { role: string }).role
-        : null,
-    reviewer_name:
-      r.reviewer &&
-      typeof r.reviewer === "object" &&
-      "full_name" in r.reviewer
-        ? (r.reviewer as { full_name: string }).full_name
-        : null,
-    rep: undefined,
-    reviewer: undefined,
+    rep_name: userMap.get(r.rep_id)?.full_name ?? null,
+    rep_role: userMap.get(r.rep_id)?.role ?? null,
+    reviewer_name: userMap.get(r.reviewed_by)?.full_name ?? null,
   }))
 
-  // Fetch active reps for the scoring form
-  const { data: repsData } = await supabase
-    .from("users")
-    .select("id, full_name, role")
-    .in("role", ["setter", "closer"])
-    .eq("status", "active")
-    .order("full_name", { ascending: true })
+  // Active reps for the scoring form
+  const reps = (usersResult.data ?? [])
+    .filter((u) => u.role === "setter" || u.role === "closer")
+    .map((r) => ({ id: r.id, full_name: r.full_name, role: r.role }))
+    .sort((a, b) => a.full_name.localeCompare(b.full_name))
 
-  const reps = (repsData ?? []).map((r) => ({
-    id: r.id,
-    full_name: r.full_name,
-    role: r.role,
-  }))
-
-  // Compute per-rep average QA scores
-  const repScoreMap = new Map<
-    string,
-    { totalScore: number; count: number; repName: string }
-  >()
+  // Per-rep average QA scores
+  const repScoreMap = new Map<string, { totalScore: number; count: number; repName: string }>()
   for (const review of reviews) {
     if (review.weighted_score !== null && review.rep_name) {
-      const key = review.rep_id
-      const existing = repScoreMap.get(key)
+      const existing = repScoreMap.get(review.rep_id)
       if (existing) {
         existing.totalScore += review.weighted_score
         existing.count += 1
       } else {
-        repScoreMap.set(key, {
+        repScoreMap.set(review.rep_id, {
           totalScore: review.weighted_score,
           count: 1,
           repName: review.rep_name,

@@ -63,7 +63,7 @@ export default async function AdminDashboardPage() {
       .eq("status", "active"),
 
     supabase
-      .from("daily_activities")
+      .from("daily_activity")
       .select(
         "user_id, dials_made, conversations, qualified_bookings, intros_completed, demos_booked_from_intros, demos_scheduled, demos_completed, offers_made, deals_closed, cash_collected"
       )
@@ -71,7 +71,7 @@ export default async function AdminDashboardPage() {
       .lte("date", monthEnd),
 
     supabase
-      .from("daily_activities")
+      .from("daily_activity")
       .select("user_id, demos_completed, deals_closed, cash_collected, qualified_bookings")
       .gte("date", prevMonthStart)
       .lte("date", prevMonthEnd),
@@ -97,12 +97,12 @@ export default async function AdminDashboardPage() {
     supabase.from("users").select("id, full_name, role, status").neq("role", "admin"),
 
     supabase
-      .from("daily_activities")
+      .from("daily_activity")
       .select("user_id, qualified_bookings, cash_collected, demos_completed, deals_closed")
       .gte("date", weekStart),
 
     supabase
-      .from("daily_activities")
+      .from("daily_activity")
       .select("user_id, qualified_bookings, cash_collected, demos_completed, deals_closed")
       .gte("date", prevWeekStartStr)
       .lt("date", weekStart),
@@ -122,7 +122,7 @@ export default async function AdminDashboardPage() {
       .eq("status", "active"),
 
     supabase
-      .from("daily_activities")
+      .from("daily_activity")
       .select("date, demos_scheduled, demos_completed, offers_made, deals_closed")
       .gte(
         "date",
@@ -135,7 +135,7 @@ export default async function AdminDashboardPage() {
       ),
 
     supabase
-      .from("daily_activities")
+      .from("daily_activity")
       .select("user_id, speed_to_lead_avg_min")
       .eq("date", today),
   ])

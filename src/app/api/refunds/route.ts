@@ -302,7 +302,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create audit log entry
-    await supabase.from("audit_logs").insert({
+    await supabase.from("audit_log").insert({
       user_id: user.id,
       action: "refund_processed",
       entity_type: "refund",

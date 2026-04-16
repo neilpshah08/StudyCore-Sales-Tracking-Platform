@@ -77,14 +77,14 @@ export async function GET() {
 
       // 3. Activity this month (all reps)
       supabase
-        .from("daily_activities")
+        .from("daily_activity")
         .select("user_id, dials_made, conversations, qualified_bookings, intros_completed, demos_booked_from_intros, demos_scheduled, demos_completed, offers_made, deals_closed, cash_collected")
         .gte("date", monthStart)
         .lte("date", monthEnd),
 
       // 4. Activity last month (all reps)
       supabase
-        .from("daily_activities")
+        .from("daily_activity")
         .select("user_id, demos_completed, deals_closed, cash_collected")
         .gte("date", prevMonthStart)
         .lte("date", prevMonthEnd),
@@ -130,13 +130,13 @@ export async function GET() {
 
       // 11. Activity this week (for team performance)
       supabase
-        .from("daily_activities")
+        .from("daily_activity")
         .select("user_id, qualified_bookings, cash_collected, demos_completed, deals_closed")
         .gte("date", weekStart),
 
       // 12. Activity last week (for trend comparison)
       supabase
-        .from("daily_activities")
+        .from("daily_activity")
         .select("user_id, qualified_bookings, cash_collected, demos_completed, deals_closed")
         .gte("date", prevWeekStartStr)
         .lt("date", weekStart),
@@ -155,7 +155,7 @@ export async function GET() {
 
       // 14. Monthly activity for trend
       supabase
-        .from("daily_activities")
+        .from("daily_activity")
         .select("date, demos_scheduled, demos_completed, offers_made, deals_closed")
         .gte("date", (() => {
           const d = new Date(now)
@@ -177,7 +177,7 @@ export async function GET() {
 
       // 16. Today's activity for speed-to-lead
       supabase
-        .from("daily_activities")
+        .from("daily_activity")
         .select("user_id, speed_to_lead_avg_min")
         .eq("date", now.toISOString().split("T")[0]),
     ])

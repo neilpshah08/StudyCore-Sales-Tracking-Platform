@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
     const todayStr = now.toISOString().split("T")[0]
 
     const { data: weekActivities } = await supabase
-      .from("daily_activities")
+      .from("daily_activity")
       .select("user_id, qualified_bookings, cash_collected")
       .gte("date", weekStartStr)
       .lte("date", todayStr)

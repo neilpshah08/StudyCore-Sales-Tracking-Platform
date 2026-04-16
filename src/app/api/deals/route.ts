@@ -147,7 +147,7 @@ export async function POST(request: NextRequest) {
       const thirtyDaysAgoStr = thirtyDaysAgo.toISOString().split("T")[0]
 
       const { data: recentActivity } = await supabase
-        .from("daily_activities")
+        .from("daily_activity")
         .select("demos_completed, deals_closed")
         .eq("user_id", body.closer_id)
         .gte("date", thirtyDaysAgoStr)
@@ -235,7 +235,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create audit log entry
-    await supabase.from("audit_logs").insert({
+    await supabase.from("audit_log").insert({
       user_id: user.id,
       action: "create",
       entity_type: "deal",
