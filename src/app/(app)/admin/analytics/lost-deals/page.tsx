@@ -1,14 +1,10 @@
-import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/auth"
 import { LostDealsAnalysis } from "@/components/admin/lost-deals-analysis"
 
 export default async function LostDealsPage() {
+  await requireAdmin()
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect("/login")
-
-  const { data: profile } = await supabase.from("users").select("role").eq("id", user.id).single()
-  if (!profile || profile.role !== "admin") redirect("/dashboard")
 
   const ninetyDaysAgo = new Date()
   ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90)

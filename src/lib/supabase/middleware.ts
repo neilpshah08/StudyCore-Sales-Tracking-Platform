@@ -23,14 +23,13 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // IMPORTANT: Do not write any logic between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make it very hard to
-  // debug issues with users being randomly logged out.
+  // Single auth call — the only purpose of middleware is to refresh the
+  // session cookie. Role/status checks happen in server components via
+  // the cached requireAuth/requireAdmin helpers.
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // If no user and not on auth page, redirect to login
   if (
     !user &&
     !request.nextUrl.pathname.startsWith('/login') &&
@@ -41,49 +40,6 @@ export async function updateSession(request: NextRequest) {
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
-
-  // If user exists, check their role for admin routes
-  if (user && request.nextUrl.pathname.startsWith('/admin')) {
-    const { data: profile } = await supabase
-      .from('users')
-      .select('role, status')
-      .eq('id', user.id)
-      .single()
-
-    if (!profile || profile.role !== 'admin') {
-      const url = request.nextUrl.clone()
-      url.pathname = '/dashboard'
-      return NextResponse.redirect(url)
-    }
-  }
-
-  // If user exists and is deactivated/terminated, sign them out
-  if (user) {
-    const { data: profile } = await supabase
-      .from('users')
-      .select('status')
-      .eq('id', user.id)
-      .single()
-
-    if (profile && profile.status !== 'active') {
-      await supabase.auth.signOut()
-      const url = request.nextUrl.clone()
-      url.pathname = '/login'
-      return NextResponse.redirect(url)
-    }
-  }
-
-  // IMPORTANT: You must return the supabaseResponse object as-is. If you're
-  // creating a new response object with NextResponse.next() make sure to:
-  // 1. Pass the request in it, like so:
-  //    const myNewResponse = NextResponse.next({ request })
-  // 2. Copy over the cookies, like so:
-  //    myNewResponse.cookies.setAll(supabaseResponse.cookies.getAll())
-  // 3. Change the myNewResponse object to fit your needs, but avoid changing
-  //    the cookies!
-  // 4. Finally: return myNewResponse
-  // If this is not done, you may be causing the browser and server to go out
-  // of sync and terminate the user's session prematurely.
 
   return supabaseResponse
 }

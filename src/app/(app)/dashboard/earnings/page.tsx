@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { requireAuth } from "@/lib/auth"
 import { EarningsView } from "@/components/dashboard/earnings-view"
 
 type EarningsSummary = {
@@ -22,31 +22,19 @@ type EarningsDeal = {
 
 export default async function EarningsPage() {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) redirect("/login")
-
-  const { data: profile } = await supabase
-    .from("users")
-    .select("id, role")
-    .eq("id", user.id)
-    .single()
-
-  if (!profile) redirect("/login")
+  const { profile } = await requireAuth()
 
   // Fetch all deals where user is setter or closer
   const { data: setterDeals } = await supabase
     .from("deals")
     .select("*")
-    .eq("setter_id", user.id)
+    .eq("setter_id", profile.id)
     .order("date_closed", { ascending: false })
 
   const { data: closerDeals } = await supabase
     .from("deals")
     .select("*")
-    .eq("closer_id", user.id)
+    .eq("closer_id", profile.id)
     .order("date_closed", { ascending: false })
 
   // Deduplicate deals where user is both setter and closer
@@ -165,7 +153,7 @@ export default async function EarningsPage() {
 
   return (
     <EarningsView
-      userId={user.id}
+      userId={profile.id}
       role={userRole}
       summary={summary}
       deals={earningsDeals}

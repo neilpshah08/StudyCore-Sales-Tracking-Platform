@@ -1,5 +1,6 @@
-import { redirect, notFound } from "next/navigation"
+import { notFound } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/auth"
 import { RepDetail } from "@/components/admin/rep-detail"
 import type { User, CallReview, Deal, RepNote } from "@/types/database"
 
@@ -40,21 +41,8 @@ interface PageProps {
 
 export default async function AdminRepDetailPage({ params }: PageProps) {
   const { id } = await params
+  await requireAdmin()
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) redirect("/login")
-
-  // Verify admin role
-  const { data: adminProfile } = await supabase
-    .from("users")
-    .select("role")
-    .eq("id", user.id)
-    .single()
-
-  if (!adminProfile || adminProfile.role !== "admin") redirect("/dashboard")
 
   // Fetch all data in parallel
   const [repResult, activitiesResult, callReviewsResult, dealsResult, notesResult] =

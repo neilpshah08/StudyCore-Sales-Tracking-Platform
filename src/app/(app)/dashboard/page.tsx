@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { requireAuth } from "@/lib/auth"
 import {
   formatDate,
   getWeekStart,
@@ -97,24 +98,8 @@ function DashboardSkeleton() {
 
 export default async function DashboardPage() {
   const supabase = await createClient()
+  const { profile } = await requireAuth()
 
-  // Authenticate user
-  const {
-    data: { user: authUser },
-  } = await supabase.auth.getUser()
-
-  if (!authUser) redirect("/login")
-
-  // Fetch user profile
-  const { data: profile } = await supabase
-    .from("users")
-    .select("*")
-    .eq("id", authUser.id)
-    .single()
-
-  if (!profile) redirect("/login")
-
-  // Only setters and closers should see this dashboard
   if (profile.role === "admin") {
     redirect("/admin")
   }
@@ -151,7 +136,7 @@ export default async function DashboardPage() {
     supabase
       .from("daily_activities")
       .select("*")
-      .eq("user_id", authUser.id)
+      .eq("user_id", profile.id)
       .eq("date", todayStr)
       .maybeSingle(),
 
@@ -159,7 +144,7 @@ export default async function DashboardPage() {
     supabase
       .from("daily_activities")
       .select("*")
-      .eq("user_id", authUser.id)
+      .eq("user_id", profile.id)
       .gte("date", weekStart)
       .lte("date", todayStr)
       .order("date", { ascending: true }),
@@ -168,7 +153,7 @@ export default async function DashboardPage() {
     supabase
       .from("daily_activities")
       .select("*")
-      .eq("user_id", authUser.id)
+      .eq("user_id", profile.id)
       .gte("date", monthStart)
       .lte("date", monthEnd)
       .order("date", { ascending: true }),
@@ -177,7 +162,7 @@ export default async function DashboardPage() {
     supabase
       .from("daily_activities")
       .select("date")
-      .eq("user_id", authUser.id)
+      .eq("user_id", profile.id)
       .gte("date", ninetyDaysAgoStr)
       .lte("date", todayStr)
       .order("date", { ascending: false }),
@@ -186,7 +171,7 @@ export default async function DashboardPage() {
     supabase
       .from("daily_activities")
       .select("*")
-      .eq("user_id", authUser.id)
+      .eq("user_id", profile.id)
       .gte("date", thirtyDaysAgoStr)
       .order("date", { ascending: false })
       .limit(30),
@@ -195,7 +180,7 @@ export default async function DashboardPage() {
     supabase
       .from("rep_goals")
       .select("*")
-      .eq("user_id", authUser.id)
+      .eq("user_id", profile.id)
       .eq("week_start", weekStart),
 
     // Team users (same role, active)
@@ -276,7 +261,7 @@ export default async function DashboardPage() {
 
         {/* 2. Goal Setter (compact) */}
         <GoalSetter
-          userId={authUser.id}
+          userId={profile.id}
           role={role}
           weekStart={weekStart}
           existingGoals={goals}
@@ -284,7 +269,7 @@ export default async function DashboardPage() {
 
         {/* 3. Daily Activity Logger (most prominent) */}
         <DailyActivityForm
-          userId={authUser.id}
+          userId={profile.id}
           role={role}
           existingData={todayActivity}
           date={todayStr}
@@ -301,7 +286,7 @@ export default async function DashboardPage() {
           />
           <Leaderboard
             role={role}
-            currentUserId={authUser.id}
+            currentUserId={profile.id}
             data={leaderboardData}
             anonymous={false}
           />

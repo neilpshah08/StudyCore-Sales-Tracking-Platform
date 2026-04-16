@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/auth"
 import { CommissionsDashboard } from "@/components/admin/commissions-dashboard"
 import type { CommissionRate } from "@/types/database"
 
@@ -31,20 +31,8 @@ export interface PayoutEntry {
 }
 
 export default async function AdminCommissionsPage() {
+  await requireAdmin()
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) redirect("/login")
-
-  const { data: profile } = await supabase
-    .from("users")
-    .select("role")
-    .eq("id", user.id)
-    .single()
-
-  if (!profile || profile.role !== "admin") redirect("/dashboard")
 
   // -------------------------------------------------------------------
   // Date ranges

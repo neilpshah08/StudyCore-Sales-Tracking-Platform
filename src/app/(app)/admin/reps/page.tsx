@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/auth"
 import { RepList } from "@/components/admin/rep-list"
 import type { User } from "@/types/database"
 
@@ -9,21 +9,8 @@ export interface RepWithBadges extends User {
 }
 
 export default async function AdminRepsPage() {
+  await requireAdmin()
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) redirect("/login")
-
-  // Verify admin role
-  const { data: profile } = await supabase
-    .from("users")
-    .select("role")
-    .eq("id", user.id)
-    .single()
-
-  if (!profile || profile.role !== "admin") redirect("/dashboard")
 
   // Fetch all users (active and inactive, setters and closers)
   const { data: reps } = await supabase

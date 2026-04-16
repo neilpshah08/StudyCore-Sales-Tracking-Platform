@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/auth"
 import { DealsList } from "@/components/admin/deals-list"
 import type { Deal } from "@/types/database"
 
@@ -9,21 +9,8 @@ export type DealWithNames = Deal & {
 }
 
 export default async function AdminDealsPage() {
+  await requireAdmin()
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) redirect("/login")
-
-  // Verify admin role
-  const { data: profile } = await supabase
-    .from("users")
-    .select("role")
-    .eq("id", user.id)
-    .single()
-
-  if (!profile || profile.role !== "admin") redirect("/dashboard")
 
   // Fetch all deals with setter/closer names
   const { data: dealsData } = await supabase

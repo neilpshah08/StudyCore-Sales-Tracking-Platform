@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/auth"
 import { QADashboard } from "@/components/admin/qa-dashboard"
 
 export interface ReviewWithNames {
@@ -35,20 +35,8 @@ export interface ReviewWithNames {
 }
 
 export default async function AdminQAPage() {
+  await requireAdmin()
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) redirect("/login")
-
-  const { data: profile } = await supabase
-    .from("users")
-    .select("role")
-    .eq("id", user.id)
-    .single()
-
-  if (!profile || profile.role !== "admin") redirect("/dashboard")
 
   // Fetch all call reviews with rep and reviewer names
   const { data: rawReviews } = await supabase

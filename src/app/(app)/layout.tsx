@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { requireAuth } from "@/lib/auth";
+import { AuthProvider } from "@/lib/auth-context";
 import { Sidebar } from "@/components/layout/sidebar";
 import { TopBar } from "@/components/layout/top-bar";
 
@@ -8,35 +8,25 @@ export default async function AppLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) redirect("/login");
-
-  const { data: profile } = await supabase
-    .from("users")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  if (!profile) redirect("/login");
+  const { profile } = await requireAuth();
 
   const userData = {
     id: profile.id,
+    email: profile.email,
     full_name: profile.full_name,
     role: profile.role,
-    email: profile.email,
+    status: profile.status,
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Sidebar user={userData} />
-      <div className="lg:pl-64">
-        <TopBar title="" user={userData} />
-        <main className="p-4 md:p-6 lg:p-8">{children}</main>
+    <AuthProvider user={userData}>
+      <div className="min-h-screen bg-gray-50">
+        <Sidebar user={userData} />
+        <div className="lg:pl-64">
+          <TopBar title="" user={userData} />
+          <main className="p-4 md:p-6 lg:p-8">{children}</main>
+        </div>
       </div>
-    </div>
+    </AuthProvider>
   );
 }

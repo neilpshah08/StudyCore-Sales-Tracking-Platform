@@ -1,14 +1,10 @@
-import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/auth"
 import { RevenueForecast } from "@/components/admin/revenue-forecast"
 
 export default async function ForecastPage() {
+  await requireAdmin()
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect("/login")
-
-  const { data: profile } = await supabase.from("users").select("role").eq("id", user.id).single()
-  if (!profile || profile.role !== "admin") redirect("/dashboard")
 
   const now = new Date()
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split("T")[0]

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Bell, Menu, Check } from "lucide-react";
+import { Bell, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import type { Notification } from "@/types/database";
@@ -15,13 +15,41 @@ interface TopBarProps {
   };
 }
 
+let cachedUnreadCount: number | null = null;
+let lastCountFetch = 0;
+
 export function TopBar({ title, user }: TopBarProps) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadCount, setUnreadCount] = useState(cachedUnreadCount ?? 0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [hasFetchedFull, setHasFetchedFull] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Lightweight count-only fetch — runs once per mount, throttled to 30s
+  useEffect(() => {
+    const now = Date.now();
+    if (cachedUnreadCount !== null && now - lastCountFetch < 30_000) {
+      setUnreadCount(cachedUnreadCount);
+      return;
+    }
+
+    const supabase = createClient();
+    supabase
+      .from("notifications")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("read", false)
+      .then(({ count }) => {
+        const c = count ?? 0;
+        cachedUnreadCount = c;
+        lastCountFetch = Date.now();
+        setUnreadCount(c);
+      });
+  }, [user.id]);
+
+  // Full notification fetch — only when dropdown opens
   const fetchNotifications = useCallback(async () => {
+    if (hasFetchedFull) return;
     const supabase = createClient();
     const { data } = await supabase
       .from("notifications")
@@ -33,12 +61,16 @@ export function TopBar({ title, user }: TopBarProps) {
     if (data) {
       setNotifications(data as Notification[]);
       setUnreadCount(data.filter((n) => !n.read).length);
+      cachedUnreadCount = data.filter((n) => !n.read).length;
+      setHasFetchedFull(true);
     }
-  }, [user.id]);
+  }, [user.id, hasFetchedFull]);
 
   useEffect(() => {
-    fetchNotifications();
-  }, [fetchNotifications]);
+    if (dropdownOpen && !hasFetchedFull) {
+      fetchNotifications();
+    }
+  }, [dropdownOpen, fetchNotifications, hasFetchedFull]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -64,6 +96,7 @@ export function TopBar({ title, user }: TopBarProps) {
 
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     setUnreadCount(0);
+    cachedUnreadCount = 0;
   };
 
   const formatTimeAgo = (dateStr: string): string => {
@@ -85,7 +118,6 @@ export function TopBar({ title, user }: TopBarProps) {
     <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b bg-white px-4 md:px-6">
       {/* Mobile: hamburger placeholder + centered brand */}
       <div className="flex items-center gap-3 lg:hidden">
-        {/* Spacer for the fixed hamburger button in the sidebar */}
         <div className="h-9 w-9" />
         <span className="text-lg font-bold text-[#1B2A4A]">StudyCore</span>
       </div>
@@ -98,7 +130,10 @@ export function TopBar({ title, user }: TopBarProps) {
       {/* Right side: notification bell */}
       <div className="relative" ref={dropdownRef}>
         <button
-          onClick={() => setDropdownOpen(!dropdownOpen)}
+          onClick={() => {
+            setDropdownOpen(!dropdownOpen);
+            if (!dropdownOpen) setHasFetchedFull(false);
+          }}
           className="relative rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
           aria-label="Notifications"
         >
