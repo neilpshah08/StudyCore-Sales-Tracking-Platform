@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { UserPlus, Handshake, PhoneCall, DollarSign, Loader2 } from "lucide-react"
+import { UserPlus, Handshake, PhoneCall, DollarSign, Loader2, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -33,7 +33,28 @@ export function QuickActions() {
   const [platform, setPlatform] = useState("Meta")
   const [notes, setNotes] = useState("")
   const [saving, setSaving] = useState(false)
+  const [ghlSyncing, setGhlSyncing] = useState(false)
   const { toast } = useToast()
+
+  async function handleGhlSync() {
+    setGhlSyncing(true)
+    try {
+      const res = await fetch("/api/admin/ghl/sync", { method: "POST" })
+      const data = await res.json()
+      if (res.ok) {
+        toast({
+          title: "GHL Sync Complete",
+          description: `${data.dealsCreated || 0} deals created, ${data.appointmentsProcessed || 0} appointments synced`,
+        })
+      } else {
+        toast({ title: data.error || "Sync failed", variant: "destructive" })
+      }
+    } catch {
+      toast({ title: "Sync failed", variant: "destructive" })
+    } finally {
+      setGhlSyncing(false)
+    }
+  }
 
   const handleSaveAdSpend = async () => {
     if (!spendAmount || isNaN(Number(spendAmount))) {
@@ -104,6 +125,14 @@ export function QuickActions() {
           <PhoneCall className="mr-2 h-4 w-4" />
           Score a Call
         </Link>
+      </Button>
+
+      <Button variant="outline" onClick={handleGhlSync} disabled={ghlSyncing}>
+        {ghlSyncing ? (
+          <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Syncing GHL...</>
+        ) : (
+          <><RefreshCw className="mr-2 h-4 w-4" /> Sync GHL</>
+        )}
       </Button>
 
       <Dialog open={adSpendOpen} onOpenChange={setAdSpendOpen}>

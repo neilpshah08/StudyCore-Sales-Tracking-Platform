@@ -21,6 +21,7 @@ import {
   TrendingUp,
   Sliders,
   FileText,
+  Plug,
   X,
   Menu,
 } from "lucide-react";
@@ -87,13 +88,18 @@ const adminNavItems: NavItem[] = [
     children: [
       {
         label: "General",
-        href: "/admin/settings/general",
+        href: "/admin/settings",
         icon: Sliders,
       },
       {
         label: "Audit Log",
         href: "/admin/settings/audit-log",
         icon: FileText,
+      },
+      {
+        label: "Integrations",
+        href: "/admin/settings/integrations",
+        icon: Plug,
       },
     ],
   },
