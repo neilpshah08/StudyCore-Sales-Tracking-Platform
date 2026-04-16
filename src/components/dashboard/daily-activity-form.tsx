@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
+import { formatCurrency } from "@/lib/utils"
 import type { DailyActivity } from "@/types/database"
 
 interface DailyActivityFormProps {
@@ -14,75 +15,52 @@ interface DailyActivityFormProps {
   role: "setter" | "closer"
   existingData?: DailyActivity | null
   date: string
-}
-
-interface SetterFields {
-  dials_made: number
-  conversations: number
-  speed_to_lead_avg_min: number
-  qualified_bookings: number
-  follow_ups_completed: number
-  show_confirmations_sent: number
-  intros_completed: number
-  demos_booked_from_intros: number
-  notes: string
-}
-
-interface CloserFields {
-  demos_scheduled: number
-  demos_completed: number
-  offers_made: number
-  deals_closed: number
-  cash_collected: number
-  pif_deals: number
-  payment_plan_deals: number
-  notes: string
-}
-
-const SETTER_FIELD_CONFIG = [
-  { key: "dials_made", label: "Dials Made", type: "number", step: 1 },
-  { key: "conversations", label: "Conversations", type: "number", step: 1 },
-  { key: "speed_to_lead_avg_min", label: "Speed to Lead (avg min)", type: "number", step: 0.1 },
-  { key: "qualified_bookings", label: "Qualified Bookings", type: "number", step: 1 },
-  { key: "follow_ups_completed", label: "Follow-Ups Completed", type: "number", step: 1 },
-  { key: "show_confirmations_sent", label: "Show Confirmations Sent", type: "number", step: 1 },
-  { key: "intros_completed", label: "Intros Completed", type: "number", step: 1 },
-  { key: "demos_booked_from_intros", label: "Demos Booked from Intros", type: "number", step: 1 },
-] as const
-
-const CLOSER_FIELD_CONFIG = [
-  { key: "demos_scheduled", label: "Demos Scheduled", type: "number", step: 1 },
-  { key: "demos_completed", label: "Demos Completed", type: "number", step: 1 },
-  { key: "offers_made", label: "Offers Made", type: "number", step: 1 },
-  { key: "deals_closed", label: "Deals Closed", type: "number", step: 1 },
-  { key: "cash_collected", label: "Cash Collected ($)", type: "number", step: 0.01 },
-  { key: "pif_deals", label: "PIF Deals", type: "number", step: 1 },
-  { key: "payment_plan_deals", label: "Payment Plan Deals", type: "number", step: 1 },
-] as const
-
-function getInitialSetterFields(data?: DailyActivity | null): SetterFields {
-  return {
-    dials_made: data?.dials_made ?? 0,
-    conversations: data?.conversations ?? 0,
-    speed_to_lead_avg_min: data?.speed_to_lead_avg_min ?? 0,
-    qualified_bookings: data?.qualified_bookings ?? 0,
-    follow_ups_completed: data?.follow_ups_completed ?? 0,
-    show_confirmations_sent: data?.show_confirmations_sent ?? 0,
-    intros_completed: data?.intros_completed ?? 0,
-    demos_booked_from_intros: data?.demos_booked_from_intros ?? 0,
-    notes: data?.notes ?? "",
+  dealStats?: {
+    deals_closed: number
+    cash_collected: number
+    pif_deals: number
+    payment_plan_deals: number
   }
 }
 
-function getInitialCloserFields(data?: DailyActivity | null): CloserFields {
+const SETTER_FIELD_CONFIG = [
+  { key: "dials_made", label: "Dials Made", step: 1 },
+  { key: "conversations", label: "Conversations", step: 1 },
+  { key: "speed_to_lead_avg_min", label: "Speed to Lead (avg min)", step: 0.1 },
+  { key: "qualified_bookings", label: "Qualified Bookings", step: 1 },
+  { key: "follow_ups_completed", label: "Follow-Ups Completed", step: 1 },
+  { key: "show_confirmations_sent", label: "Show Confirmations Sent", step: 1 },
+  { key: "intros_completed", label: "Intros Completed", step: 1 },
+  { key: "demos_booked_from_intros", label: "Demos Booked from Intros", step: 1 },
+] as const
+
+// Closer only manually enters demos/offers — deal fields come from deals table
+const CLOSER_FIELD_CONFIG = [
+  { key: "demos_scheduled", label: "Demos Scheduled", step: 1 },
+  { key: "demos_completed", label: "Demos Completed", step: 1 },
+  { key: "offers_made", label: "Offers Made", step: 1 },
+] as const
+
+type FieldValues = Record<string, number | string>
+
+function getInitialFields(role: string, data?: DailyActivity | null): FieldValues {
+  if (role === "setter") {
+    return {
+      dials_made: data?.dials_made ?? 0,
+      conversations: data?.conversations ?? 0,
+      speed_to_lead_avg_min: data?.speed_to_lead_avg_min ?? 0,
+      qualified_bookings: data?.qualified_bookings ?? 0,
+      follow_ups_completed: data?.follow_ups_completed ?? 0,
+      show_confirmations_sent: data?.show_confirmations_sent ?? 0,
+      intros_completed: data?.intros_completed ?? 0,
+      demos_booked_from_intros: data?.demos_booked_from_intros ?? 0,
+      notes: data?.notes ?? "",
+    }
+  }
   return {
     demos_scheduled: data?.demos_scheduled ?? 0,
     demos_completed: data?.demos_completed ?? 0,
     offers_made: data?.offers_made ?? 0,
-    deals_closed: data?.deals_closed ?? 0,
-    cash_collected: data?.cash_collected ?? 0,
-    pif_deals: data?.pif_deals ?? 0,
-    payment_plan_deals: data?.payment_plan_deals ?? 0,
     notes: data?.notes ?? "",
   }
 }
@@ -92,35 +70,19 @@ export function DailyActivityForm({
   role,
   existingData,
   date,
+  dealStats,
 }: DailyActivityFormProps) {
   const isEditMode = !!existingData
   const [saving, setSaving] = useState(false)
-
-  const [setterFields, setSetterFields] = useState<SetterFields>(
-    getInitialSetterFields(existingData)
-  )
-  const [closerFields, setCloserFields] = useState<CloserFields>(
-    getInitialCloserFields(existingData)
+  const [fields, setFields] = useState<FieldValues>(
+    getInitialFields(role, existingData)
   )
 
   const fieldConfig = role === "setter" ? SETTER_FIELD_CONFIG : CLOSER_FIELD_CONFIG
-  const fields = role === "setter" ? setterFields : closerFields
 
   const handleFieldChange = (key: string, value: string) => {
     const numValue = value === "" ? 0 : Number(value)
-    if (role === "setter") {
-      setSetterFields((prev) => ({ ...prev, [key]: key === "notes" ? value : numValue }))
-    } else {
-      setCloserFields((prev) => ({ ...prev, [key]: key === "notes" ? value : numValue }))
-    }
-  }
-
-  const handleNotesChange = (value: string) => {
-    if (role === "setter") {
-      setSetterFields((prev) => ({ ...prev, notes: value }))
-    } else {
-      setCloserFields((prev) => ({ ...prev, notes: value }))
-    }
+    setFields((prev) => ({ ...prev, [key]: numValue }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -128,10 +90,12 @@ export function DailyActivityForm({
     setSaving(true)
 
     try {
-      const body = {
+      const { notes, ...numericFields } = fields
+      const body: Record<string, unknown> = {
         user_id: userId,
         date,
-        ...(role === "setter" ? setterFields : closerFields),
+        ...numericFields,
+        notes: notes || null,
       }
 
       const res = await fetch("/api/activity", {
@@ -183,7 +147,7 @@ export function DailyActivityForm({
                   type="number"
                   min={0}
                   step={field.step}
-                  value={(fields as unknown as Record<string, number | string>)[field.key] || ""}
+                  value={fields[field.key] ?? ""}
                   onChange={(e) => handleFieldChange(field.key, e.target.value)}
                   placeholder="0"
                   className="h-12 text-base sm:h-10 sm:text-sm"
@@ -192,14 +156,41 @@ export function DailyActivityForm({
             ))}
           </div>
 
+          {/* Read-only deal stats for closers */}
+          {role === "closer" && dealStats && (
+            <div className="rounded-lg border bg-muted/30 p-4">
+              <p className="text-sm font-medium text-muted-foreground mb-3">
+                Today&apos;s Deal Stats (auto-calculated from Deals)
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div>
+                  <p className="text-xs text-muted-foreground">Deals Closed</p>
+                  <p className="text-xl font-bold">{dealStats.deals_closed}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Cash Collected</p>
+                  <p className="text-xl font-bold text-green-600">{formatCurrency(dealStats.cash_collected)}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">PIF Deals</p>
+                  <p className="text-xl font-bold">{dealStats.pif_deals}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Payment Plan</p>
+                  <p className="text-xl font-bold">{dealStats.payment_plan_deals}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="space-y-1.5">
             <Label htmlFor="activity-notes" className="text-sm font-medium">
               Notes
             </Label>
             <Textarea
               id="activity-notes"
-              value={role === "setter" ? setterFields.notes : closerFields.notes}
-              onChange={(e) => handleNotesChange(e.target.value)}
+              value={(fields.notes as string) || ""}
+              onChange={(e) => setFields((prev) => ({ ...prev, notes: e.target.value }))}
               placeholder="Optional notes about today's activities..."
               rows={3}
             />
