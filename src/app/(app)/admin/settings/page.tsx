@@ -19,8 +19,8 @@ export default async function AdminSettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#1B2A4A]">Settings</h1>
-        <p className="text-sm text-muted-foreground">Configure application settings and benchmarks</p>
+        <h1 className="text-2xl font-bold text-white">Settings</h1>
+        <p className="text-sm text-white/55">Configure application settings and benchmarks</p>
       </div>
       <SettingsPage settings={settings} commissionRates={ratesResult.data ?? []} />
     </div>

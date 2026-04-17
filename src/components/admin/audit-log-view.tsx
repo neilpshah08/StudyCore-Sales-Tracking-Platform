@@ -96,12 +96,12 @@ export function AuditLogView({ entries }: Props) {
                     {e.action.replace(/_/g, " ")}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-sm text-muted-foreground">{e.entity_type}</TableCell>
+                <TableCell className="text-sm text-white/55">{e.entity_type}</TableCell>
                 <TableCell className="text-sm max-w-md truncate">{e.description}</TableCell>
               </TableRow>
             ))}
             {filtered.length === 0 && (
-              <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">No audit entries found</TableCell></TableRow>
+              <TableRow><TableCell colSpan={5} className="text-center text-white/55 py-8">No audit entries found</TableCell></TableRow>
             )}
           </TableBody>
         </Table>
@@ -113,13 +113,13 @@ export function AuditLogView({ entries }: Props) {
           {selectedEntry && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-2 text-sm">
-                <div><span className="text-muted-foreground">Timestamp:</span> {new Date(selectedEntry.timestamp).toLocaleString("en-US", { timeZone: "America/Los_Angeles" })}</div>
-                <div><span className="text-muted-foreground">Admin:</span> {selectedEntry.admin_name}</div>
-                <div><span className="text-muted-foreground">Action:</span> {selectedEntry.action}</div>
-                <div><span className="text-muted-foreground">Entity:</span> {selectedEntry.entity_type}</div>
+                <div><span className="text-white/55">Timestamp:</span> {new Date(selectedEntry.timestamp).toLocaleString("en-US", { timeZone: "America/Los_Angeles" })}</div>
+                <div><span className="text-white/55">Admin:</span> {selectedEntry.admin_name}</div>
+                <div><span className="text-white/55">Action:</span> {selectedEntry.action}</div>
+                <div><span className="text-white/55">Entity:</span> {selectedEntry.entity_type}</div>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Description</p>
+                <p className="text-sm text-white/55">Description</p>
                 <p className="text-sm">{selectedEntry.description}</p>
               </div>
               {selectedEntry.changes && Object.keys(selectedEntry.changes).length > 0 && (
@@ -129,14 +129,14 @@ export function AuditLogView({ entries }: Props) {
                     {Object.entries(selectedEntry.changes).map(([field, change]) => (
                       <div key={field} className="text-sm">
                         <span className="font-medium">{field}:</span>{" "}
-                        <span className="text-red-600 line-through">{String(change.old)}</span>{" → "}
-                        <span className="text-green-600">{String(change.new)}</span>
+                        <span className="text-[#EF4444] line-through">{String(change.old)}</span>{" → "}
+                        <span className="text-[#10B981]">{String(change.new)}</span>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
-              <p className="text-xs text-muted-foreground">Entity ID: {selectedEntry.entity_id}</p>
+              <p className="text-xs text-white/55">Entity ID: {selectedEntry.entity_id}</p>
             </div>
           )}
         </DialogContent>

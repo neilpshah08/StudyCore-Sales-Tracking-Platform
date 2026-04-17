@@ -140,7 +140,7 @@ export function ActivityHistory({ activities, role }: ActivityHistoryProps) {
         </CardHeader>
         <CardContent>
           {activities.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-4">
+            <p className="text-sm text-white/55 text-center py-4">
               No activity history yet. Start logging your daily activity!
             </p>
           ) : (
@@ -178,35 +178,35 @@ export function ActivityHistory({ activities, role }: ActivityHistoryProps) {
                         <TableRow
                           key={activity.id}
                           className={cn(
-                            editable && "cursor-pointer hover:bg-blue-50/50"
+                            editable && "cursor-pointer"
                           )}
                           onClick={() => editable && openEditDialog(activity)}
                         >
-                          <TableCell className="font-medium whitespace-nowrap">
+                          <TableCell className="font-medium whitespace-nowrap text-white/85">
                             {formatDate(activity.date)}
                           </TableCell>
                           {role === "setter" ? (
                             <>
-                              <TableCell className="text-right">{activity.dials_made}</TableCell>
-                              <TableCell className="text-right">{activity.conversations}</TableCell>
-                              <TableCell className="text-right">{activity.qualified_bookings}</TableCell>
-                              <TableCell className="text-right">{activity.follow_ups_completed}</TableCell>
-                              <TableCell className="text-right">{activity.intros_completed}</TableCell>
+                              <TableCell className="text-right metric-number text-white/85">{activity.dials_made}</TableCell>
+                              <TableCell className="text-right metric-number text-white/85">{activity.conversations}</TableCell>
+                              <TableCell className="text-right metric-number text-white/85">{activity.qualified_bookings}</TableCell>
+                              <TableCell className="text-right metric-number text-white/85">{activity.follow_ups_completed}</TableCell>
+                              <TableCell className="text-right metric-number text-white/85">{activity.intros_completed}</TableCell>
                             </>
                           ) : (
                             <>
-                              <TableCell className="text-right">{activity.demos_completed}</TableCell>
-                              <TableCell className="text-right">{activity.offers_made}</TableCell>
-                              <TableCell className="text-right">{activity.deals_closed}</TableCell>
-                              <TableCell className="text-right">{formatCurrency(activity.cash_collected)}</TableCell>
-                              <TableCell className="text-right">{activity.pif_deals}</TableCell>
+                              <TableCell className="text-right metric-number text-white/85">{activity.demos_completed}</TableCell>
+                              <TableCell className="text-right metric-number text-white/85">{activity.offers_made}</TableCell>
+                              <TableCell className="text-right metric-number text-white/85">{activity.deals_closed}</TableCell>
+                              <TableCell className="text-right metric-number text-white/85">{formatCurrency(activity.cash_collected)}</TableCell>
+                              <TableCell className="text-right metric-number text-white/85">{activity.pif_deals}</TableCell>
                             </>
                           )}
                           <TableCell className="max-w-[120px]">
                             {activity.notes ? (
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <span className="text-xs text-muted-foreground truncate block">
+                                  <span className="text-xs text-white/55 truncate block">
                                     {activity.notes.length > 30
                                       ? `${activity.notes.slice(0, 30)}...`
                                       : activity.notes}
@@ -217,7 +217,7 @@ export function ActivityHistory({ activities, role }: ActivityHistoryProps) {
                                 </TooltipContent>
                               </Tooltip>
                             ) : (
-                              <span className="text-xs text-muted-foreground">-</span>
+                              <span className="text-xs text-white/40">-</span>
                             )}
                           </TableCell>
                           <TableCell>
@@ -225,7 +225,7 @@ export function ActivityHistory({ activities, role }: ActivityHistoryProps) {
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <span
-                                    className="text-muted-foreground"
+                                    className="text-white/45"
                                     role="img"
                                     aria-label="locked"
                                   >
@@ -255,8 +255,8 @@ export function ActivityHistory({ activities, role }: ActivityHistoryProps) {
                   >
                     Previous
                   </Button>
-                  <span className="text-sm text-muted-foreground">
-                    Page {page + 1} of {totalPages}
+                  <span className="text-sm text-white/55">
+                    Page <span className="metric-number">{page + 1}</span> of <span className="metric-number">{totalPages}</span>
                   </span>
                   <Button
                     variant="outline"

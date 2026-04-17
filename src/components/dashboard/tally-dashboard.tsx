@@ -2,12 +2,10 @@
 
 import { useState, useCallback, useRef, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
-import { toast } from "@/components/ui/use-toast"
 import { cn, formatCurrency, formatPercent } from "@/lib/utils"
 import { Plus, Minus, Clock, Loader2 } from "lucide-react"
 import type { DailyActivity } from "@/types/database"
@@ -71,7 +69,6 @@ export function TallyDashboard({
 }: Props) {
   const tallies = role === "setter" ? SETTER_TALLIES : CLOSER_TALLIES
 
-  // Initialize counts from existing data
   const [counts, setCounts] = useState<Record<string, number>>(() => {
     const initial: Record<string, number> = {}
     for (const t of tallies) {
@@ -89,12 +86,10 @@ export function TallyDashboard({
   const saveTimer = useRef<NodeJS.Timeout | null>(null)
   const pendingRef = useRef<Record<string, number>>({})
 
-  // Convert weekData to a plain Record for easy keyed access
   const weekDataRecord: Record<string, number> = Object.fromEntries(
     Object.entries(weekData).map(([k, v]) => [k, v as number])
   )
 
-  // Derived live week totals — start from server weekData, swap today's saved value with live count
   const [liveWeekTotals, setLiveWeekTotals] = useState<Record<string, number>>(() => ({ ...weekDataRecord }))
 
   useEffect(() => {
@@ -106,7 +101,6 @@ export function TallyDashboard({
     setLiveWeekTotals(totals)
   }, [counts])
 
-  // Persist to API — debounced
   const saveToApi = useCallback(
     async (newCounts: Record<string, number>, extraFields?: Record<string, unknown>) => {
       setSaving(true)
@@ -127,12 +121,10 @@ export function TallyDashboard({
         if (!res.ok) throw new Error("Save failed")
 
         setLastSaved(new Date())
-        // Clear offline queue on success
         if (typeof window !== "undefined") {
           localStorage.removeItem(OFFLINE_QUEUE_KEY)
         }
       } catch {
-        // Queue for offline retry
         if (typeof window !== "undefined") {
           localStorage.setItem(
             OFFLINE_QUEUE_KEY,
@@ -146,7 +138,6 @@ export function TallyDashboard({
     [userId, date]
   )
 
-  // Debounced save — waits 600ms after last tap before saving
   const debouncedSave = useCallback(
     (newCounts: Record<string, number>) => {
       pendingRef.current = newCounts
@@ -161,7 +152,6 @@ export function TallyDashboard({
     [saveToApi, notes, speedToLead, role]
   )
 
-  // Retry offline queue on mount
   useEffect(() => {
     if (typeof window === "undefined") return
     const queued = localStorage.getItem(OFFLINE_QUEUE_KEY)
@@ -184,7 +174,6 @@ export function TallyDashboard({
     })
   }
 
-  // Save notes on blur (debounced)
   const notesTimer = useRef<NodeJS.Timeout | null>(null)
   function handleNotesChange(value: string) {
     setNotes(value)
@@ -209,7 +198,6 @@ export function TallyDashboard({
     }, 1000)
   }
 
-  // Build benchmark progress bars
   const progressBars: Benchmark[] = role === "setter" ? [
     { label: "Dials", current: liveWeekTotals.dials_made ?? 0, target: benchmarks.setter_weekly_dials ?? 350, format: "number" },
     { label: "Conversations", current: liveWeekTotals.conversations ?? 0, target: benchmarks.setter_weekly_conversations ?? 40, format: "number" },
@@ -225,7 +213,7 @@ export function TallyDashboard({
   return (
     <div className="space-y-4">
       {/* Status bar */}
-      <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
+      <div className="flex items-center justify-between text-xs text-white/55 px-1">
         <span>
           {saving ? (
             <span className="flex items-center gap-1"><Loader2 className="h-3 w-3 animate-spin" /> Saving...</span>
@@ -235,7 +223,7 @@ export function TallyDashboard({
             "Auto-saves on each tap"
           )}
         </span>
-        <span className="font-medium">{date}</span>
+        <span className="font-medium metric-number text-white/70">{date}</span>
       </div>
 
       {/* Tally Cards Grid */}
@@ -267,7 +255,7 @@ export function TallyDashboard({
         <Card>
           <CardContent className="pt-4 pb-4">
             <div className="flex items-center gap-4">
-              <Clock className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+              <Clock className="h-5 w-5 text-white/60 flex-shrink-0" />
               <div className="flex-1">
                 <Label className="text-sm font-medium">Speed to Lead (avg minutes)</Label>
                 <Input
@@ -288,7 +276,7 @@ export function TallyDashboard({
       {/* Live Scorecard Progress */}
       <Card>
         <CardContent className="pt-4 pb-4">
-          <p className="text-sm font-medium text-muted-foreground mb-3">This Week vs Benchmarks</p>
+          <p className="text-xs uppercase tracking-wider font-semibold text-white/55 mb-3">This Week vs Benchmarks</p>
           <div className="space-y-3">
             {progressBars.map((b) => {
               const pct = b.target > 0 ? Math.min((b.current / b.target) * 100, 100) : 0
@@ -307,11 +295,11 @@ export function TallyDashboard({
 
               return (
                 <div key={b.label}>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="font-medium">{b.label}</span>
+                  <div className="flex justify-between text-sm mb-1.5">
+                    <span className="font-medium text-white/85">{b.label}</span>
                     <span className={cn(
-                      "tabular-nums",
-                      atTarget ? "text-green-600 font-bold" : nearTarget ? "text-yellow-600" : "text-muted-foreground"
+                      "metric-number",
+                      atTarget ? "text-[#10B981] font-bold" : nearTarget ? "text-[#F59E0B]" : "text-white/55"
                     )}>
                       {displayValue} / {displayTarget}
                     </span>
@@ -320,7 +308,7 @@ export function TallyDashboard({
                     value={pct}
                     className="h-2"
                     indicatorClassName={cn(
-                      atTarget ? "bg-green-500" : nearTarget ? "bg-yellow-500" : "bg-blue-500"
+                      atTarget ? "progress-fill-green" : nearTarget ? "progress-fill-yellow" : "progress-fill-blue"
                     )}
                   />
                 </div>
@@ -363,34 +351,34 @@ function TallyCard({
   onDecrement: () => void
 }) {
   return (
-    <Card className="overflow-hidden">
-      <CardContent className="p-0">
-        <div className="text-center pt-3 pb-1 px-2">
-          <span className="text-2xl">{emoji}</span>
-          <p className="text-xs font-medium text-muted-foreground mt-1 leading-tight">{label}</p>
-          <p className="text-3xl font-bold tabular-nums mt-1">{count}</p>
-        </div>
-        <div className="flex border-t">
-          <button
-            type="button"
-            onClick={onDecrement}
-            disabled={count <= 0}
-            className="flex-1 py-3 text-center text-lg font-medium text-red-500 hover:bg-red-50 active:bg-red-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors border-r"
-            aria-label={`Decrease ${label}`}
-          >
-            <Minus className="h-4 w-4 mx-auto" />
-          </button>
-          <button
-            type="button"
-            onClick={onIncrement}
-            className="flex-[2] py-3 text-center text-lg font-bold text-green-600 hover:bg-green-50 active:bg-green-100 transition-colors"
-            aria-label={`Increase ${label}`}
-          >
-            <Plus className="h-5 w-5 mx-auto" />
-          </button>
-        </div>
-      </CardContent>
-    </Card>
+    <div className="glass-card p-4 flex flex-col items-center text-center">
+      <span className="text-2xl">{emoji}</span>
+      <p className="text-[11px] uppercase tracking-wider font-semibold text-white/55 mt-1.5 leading-tight">
+        {label}
+      </p>
+      <p className="metric-number text-4xl font-bold text-white mt-1.5 mb-3">
+        {count}
+      </p>
+      <div className="flex items-center gap-2.5 mt-auto">
+        <button
+          type="button"
+          onClick={onDecrement}
+          disabled={count <= 0}
+          className="tally-btn tally-btn-minus disabled:opacity-30 disabled:cursor-not-allowed"
+          aria-label={`Decrease ${label}`}
+        >
+          <Minus className="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          onClick={onIncrement}
+          className="tally-btn"
+          aria-label={`Increase ${label}`}
+        >
+          <Plus className="h-6 w-6" />
+        </button>
+      </div>
+    </div>
   )
 }
 
@@ -408,12 +396,20 @@ function ReadOnlyStatCard({
   highlight?: boolean
 }) {
   return (
-    <Card className={cn(highlight && "border-green-200 bg-green-50/50")}>
-      <CardContent className="pt-3 pb-3 text-center">
-        <span className="text-lg">{emoji}</span>
-        <p className="text-xs text-muted-foreground mt-1">{label}</p>
-        <p className={cn("text-xl font-bold mt-0.5", highlight && "text-green-600")}>{value}</p>
-      </CardContent>
-    </Card>
+    <div className={cn(
+      "glass-card p-3 text-center",
+      highlight && "border-[#10B981]/30 shadow-[0_0_24px_rgba(16,185,129,0.15)]"
+    )}>
+      <span className="text-lg">{emoji}</span>
+      <p className="text-[10px] uppercase tracking-wider font-semibold text-white/55 mt-1">
+        {label}
+      </p>
+      <p className={cn(
+        "metric-number text-xl font-bold mt-0.5",
+        highlight ? "text-[#10B981]" : "text-white"
+      )}>
+        {value}
+      </p>
+    </div>
   )
 }

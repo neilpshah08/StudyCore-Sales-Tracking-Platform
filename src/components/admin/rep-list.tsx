@@ -43,14 +43,14 @@ type SortKey =
 type SortDir = "asc" | "desc"
 
 const roleBadgeClass: Record<string, string> = {
-  setter: "bg-blue-100 text-blue-800 border-blue-200",
+  setter: "bg-blue-100 text-[#93C5FD] border-blue-200",
   closer: "bg-purple-100 text-purple-800 border-purple-200",
 }
 
 const statusBadgeClass: Record<string, string> = {
-  active: "bg-green-100 text-green-800 border-green-200",
-  inactive: "bg-gray-100 text-gray-600 border-gray-200",
-  terminated: "bg-red-100 text-red-800 border-red-200",
+  active: "bg-green-100 text-[#6EE7B7] border-green-200",
+  inactive: "bg-white/8 text-white/70 border-white/10",
+  terminated: "bg-red-100 text-[#FCA5A5] border-red-200",
 }
 
 export function RepList({ reps }: RepListProps) {
@@ -123,7 +123,7 @@ export function RepList({ reps }: RepListProps) {
     >
       <span className="flex items-center gap-1">
         {label}
-        <ChevronsUpDown className="h-3 w-3 text-muted-foreground" />
+        <ChevronsUpDown className="h-3 w-3 text-white/55" />
       </span>
     </TableHead>
   )
@@ -188,7 +188,7 @@ export function RepList({ reps }: RepListProps) {
               <TableRow>
                 <TableCell
                   colSpan={8}
-                  className="text-center text-muted-foreground"
+                  className="text-center text-white/55"
                 >
                   No reps found matching the current filters.
                 </TableCell>
@@ -199,7 +199,7 @@ export function RepList({ reps }: RepListProps) {
                   <TableCell>
                     <Link
                       href={`/admin/reps/${rep.id}`}
-                      className="font-medium text-blue-600 hover:underline"
+                      className="font-medium text-[#60A5FA] hover:underline"
                     >
                       {rep.full_name}
                     </Link>
@@ -223,7 +223,7 @@ export function RepList({ reps }: RepListProps) {
                       {rep.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
+                  <TableCell className="text-sm text-white/55">
                     {rep.hire_date ? formatDate(rep.hire_date) : "-"}
                   </TableCell>
                   <TableCell>
@@ -232,7 +232,7 @@ export function RepList({ reps }: RepListProps) {
                         ? formatCurrency(rep.currentWeekKpi)
                         : rep.currentWeekKpi}
                     </span>
-                    <span className="ml-1 text-xs text-muted-foreground">
+                    <span className="ml-1 text-xs text-white/55">
                       {rep.role === "setter" ? "bookings" : "cash"}
                     </span>
                   </TableCell>
@@ -255,7 +255,7 @@ export function RepList({ reps }: RepListProps) {
                   <TableCell>
                     <Link
                       href={`/admin/reps/${rep.id}/edit`}
-                      className="text-sm text-blue-600 hover:underline"
+                      className="text-sm text-[#60A5FA] hover:underline"
                     >
                       Edit
                     </Link>

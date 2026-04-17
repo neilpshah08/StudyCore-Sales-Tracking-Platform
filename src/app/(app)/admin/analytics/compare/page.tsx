@@ -16,8 +16,8 @@ export default async function ComparePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#1B2A4A]">Rep Comparison</h1>
-        <p className="text-sm text-muted-foreground">Compare two reps side-by-side</p>
+        <h1 className="text-2xl font-bold text-white">Rep Comparison</h1>
+        <p className="text-sm text-white/55">Compare two reps side-by-side</p>
       </div>
       <RepComparison reps={(repsData ?? []).map((r) => ({ id: r.id, full_name: r.full_name, role: r.role }))} />
     </div>

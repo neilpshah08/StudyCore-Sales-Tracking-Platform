@@ -417,8 +417,12 @@ export default async function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#1B2A4A]">Admin Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="font-display text-2xl font-bold tracking-tight">
+          <span className="bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+            Admin Dashboard
+          </span>
+        </h1>
+        <p className="text-sm text-white/55">
           Overview of sales performance and team metrics
         </p>
       </div>
@@ -440,7 +444,7 @@ export default async function AdminDashboardPage() {
 
       {/* Quick Actions */}
       <div>
-        <h2 className="mb-3 text-lg font-semibold text-[#1B2A4A]">
+        <h2 className="mb-3 font-display text-lg font-semibold text-white">
           Quick Actions
         </h2>
         <QuickActions />

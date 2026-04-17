@@ -161,7 +161,7 @@ export function GhlIntegrationPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <Loader2 className="h-8 w-8 animate-spin text-white/55" />
       </div>
     )
   }
@@ -185,24 +185,24 @@ export function GhlIntegrationPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           {status?.connected ? (
-            <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-              <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
+            <div className="flex items-center gap-3 p-3 bg-[#10B981]/8 rounded-lg">
+              <CheckCircle2 className="h-5 w-5 text-[#10B981] flex-shrink-0" />
               <div>
-                <p className="font-medium text-green-800">Connected to GHL</p>
+                <p className="font-medium text-[#6EE7B7]">Connected to GHL</p>
                 {status.locationName && (
-                  <p className="text-sm text-green-700">Location: {status.locationName}</p>
+                  <p className="text-sm text-[#10B981]">Location: {status.locationName}</p>
                 )}
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-3 p-3 bg-red-50 rounded-lg">
-              <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+            <div className="flex items-center gap-3 p-3 bg-[#EF4444]/8 rounded-lg">
+              <XCircle className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
               <div>
-                <p className="font-medium text-red-800">
+                <p className="font-medium text-[#FCA5A5]">
                   {status?.configured ? "Connection Failed" : "Not Configured"}
                 </p>
                 {status?.error && (
-                  <p className="text-sm text-red-700">{status.error}</p>
+                  <p className="text-sm text-[#FCA5A5]">{status.error}</p>
                 )}
               </div>
             </div>
@@ -213,23 +213,23 @@ export function GhlIntegrationPage() {
             <div className="grid grid-cols-2 gap-2 text-sm">
               <div className="flex items-center gap-2">
                 {status?.configured ? (
-                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <CheckCircle2 className="h-4 w-4 text-[#10B981]" />
                 ) : (
-                  <XCircle className="h-4 w-4 text-red-500" />
+                  <XCircle className="h-4 w-4 text-[#EF4444]" />
                 )}
                 <code className="text-xs">GHL_API_KEY</code>
               </div>
               <div className="flex items-center gap-2">
                 {status?.configured ? (
-                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <CheckCircle2 className="h-4 w-4 text-[#10B981]" />
                 ) : (
-                  <XCircle className="h-4 w-4 text-red-500" />
+                  <XCircle className="h-4 w-4 text-[#EF4444]" />
                 )}
                 <code className="text-xs">GHL_LOCATION_ID</code>
               </div>
             </div>
             {!status?.configured && (
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-white/55 mt-2">
                 Set <code>GHL_API_KEY</code> and <code>GHL_LOCATION_ID</code> in your .env.local file or Vercel environment variables.
               </p>
             )}
@@ -269,10 +269,10 @@ export function GhlIntegrationPage() {
             ].map(({ label, key, icon: Icon }) => (
               <div key={key} className="border rounded-lg p-3">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <Icon className="h-3.5 w-3.5 text-muted-foreground" />
-                  <p className="text-xs text-muted-foreground">{label}</p>
+                  <Icon className="h-3.5 w-3.5 text-white/55" />
+                  <p className="text-xs text-white/55">{label}</p>
                 </div>
-                <p className={cn("text-sm font-medium", !status?.syncTimes?.[key] && "text-muted-foreground")}>
+                <p className={cn("text-sm font-medium", !status?.syncTimes?.[key] && "text-white/55")}>
                   {formatSyncTime(status?.syncTimes?.[key] ?? null)}
                 </p>
               </div>
@@ -283,30 +283,30 @@ export function GhlIntegrationPage() {
           {syncResult && (
             <>
               <Separator />
-              <div className="bg-blue-50 rounded-lg p-4 space-y-2">
-                <p className="font-medium text-blue-800">Last Sync Result</p>
+              <div className="bg-[#3B82F6]/8 rounded-lg p-4 space-y-2">
+                <p className="font-medium text-[#93C5FD]">Last Sync Result</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
                   <div>
-                    <p className="text-blue-600">Contacts</p>
+                    <p className="text-[#60A5FA]">Contacts</p>
                     <p className="font-bold text-lg">{syncResult.contactsAdded}</p>
                   </div>
                   <div>
-                    <p className="text-blue-600">Appointments</p>
+                    <p className="text-[#60A5FA]">Appointments</p>
                     <p className="font-bold text-lg">{syncResult.appointmentsProcessed}</p>
                   </div>
                   <div>
-                    <p className="text-blue-600">Deals Created</p>
-                    <p className="font-bold text-lg text-green-600">{syncResult.dealsCreated}</p>
+                    <p className="text-[#60A5FA]">Deals Created</p>
+                    <p className="font-bold text-lg text-[#10B981]">{syncResult.dealsCreated}</p>
                   </div>
                   <div>
-                    <p className="text-blue-600">Lost Deals</p>
-                    <p className="font-bold text-lg text-red-600">{syncResult.lostDealsLogged}</p>
+                    <p className="text-[#60A5FA]">Lost Deals</p>
+                    <p className="font-bold text-lg text-[#EF4444]">{syncResult.lostDealsLogged}</p>
                   </div>
                 </div>
                 {syncResult.errors.length > 0 && (
                   <div className="mt-2 space-y-1">
                     {syncResult.errors.map((e, i) => (
-                      <div key={i} className="flex items-start gap-2 text-sm text-red-600">
+                      <div key={i} className="flex items-start gap-2 text-sm text-[#EF4444]">
                         <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
                         <span>{e}</span>
                       </div>
@@ -328,7 +328,7 @@ export function GhlIntegrationPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-white/55">
             Webhooks receive real-time events from GHL (contact created, opportunity stage changed, appointment status).
             Enter your app&apos;s public URL to register the webhook endpoint.
           </p>
@@ -369,7 +369,7 @@ export function GhlIntegrationPage() {
                 {status.webhooks.map((wh) => (
                   <TableRow key={wh.id}>
                     <TableCell className="font-medium">{wh.name}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground max-w-xs truncate">
+                    <TableCell className="text-sm text-white/55 max-w-xs truncate">
                       {wh.url}
                     </TableCell>
                     <TableCell>
@@ -392,7 +392,7 @@ export function GhlIntegrationPage() {
                         size="sm"
                         onClick={() => wh.id && handleDeleteWebhook(wh.id)}
                       >
-                        <Trash2 className="h-4 w-4 text-red-500" />
+                        <Trash2 className="h-4 w-4 text-[#EF4444]" />
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -402,7 +402,7 @@ export function GhlIntegrationPage() {
           )}
 
           {(!status?.webhooks || status.webhooks.length === 0) && (
-            <div className="border border-dashed rounded-lg p-6 text-center text-muted-foreground">
+            <div className="border border-dashed rounded-lg p-6 text-center text-white/55">
               <Webhook className="h-8 w-8 mx-auto mb-2 opacity-50" />
               <p className="text-sm">No webhooks registered yet</p>
               <p className="text-xs mt-1">Register a webhook to receive real-time events from GHL</p>
@@ -441,20 +441,20 @@ export function GhlIntegrationPage() {
                   key={endpoint}
                   className={cn(
                     "flex items-start justify-between p-3 rounded-lg border",
-                    result.ok ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"
+                    result.ok ? "bg-[#10B981]/8 border-green-200" : "bg-[#EF4444]/8 border-red-200"
                   )}
                 >
                   <div>
                     <div className="flex items-center gap-2">
                       {result.ok ? (
-                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        <CheckCircle2 className="h-4 w-4 text-[#10B981]" />
                       ) : (
-                        <XCircle className="h-4 w-4 text-red-600" />
+                        <XCircle className="h-4 w-4 text-[#EF4444]" />
                       )}
                       <span className="font-medium capitalize">{endpoint}</span>
                     </div>
                     {result.error && (
-                      <p className="text-xs text-red-600 mt-1 ml-6">{result.error}</p>
+                      <p className="text-xs text-[#EF4444] mt-1 ml-6">{result.error}</p>
                     )}
                   </div>
                   {result.data != null && (
@@ -475,7 +475,7 @@ export function GhlIntegrationPage() {
           <CardTitle>Custom Field Mapping</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground mb-3">
+          <p className="text-sm text-white/55 mb-3">
             These GHL custom fields are used to extract deal data when opportunities close.
           </p>
           <Table>

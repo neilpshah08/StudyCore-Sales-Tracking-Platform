@@ -24,14 +24,14 @@ interface FunnelChartProps {
 }
 
 const FUNNEL_COLORS = [
-  "#93C5FD", // light blue
-  "#60A5FA",
-  "#3B82F6",
-  "#2563EB",
-  "#1D4ED8",
-  "#1E40AF",
-  "#1E3A8A",
-  "#172554", // navy
+  "#A5B4FC",
+  "#818CF8",
+  "#6366F1",
+  "#4F46E5",
+  "#7C3AED",
+  "#8B5CF6",
+  "#A78BFA",
+  "#C4B5FD",
 ]
 
 function CustomTooltip({
@@ -44,15 +44,15 @@ function CustomTooltip({
   if (active && payload && payload.length > 0) {
     const data = payload[0].payload
     return (
-      <div className="rounded-lg border bg-background p-3 shadow-md">
-        <p className="font-semibold">{data.name}</p>
-        <p className="text-sm text-muted-foreground">
-          Count: <span className="font-medium text-foreground">{data.count.toLocaleString()}</span>
+      <div className="rounded-xl border border-white/10 bg-slate-900/90 p-3 shadow-[0_18px_40px_rgba(0,0,0,0.5)] backdrop-blur-2xl">
+        <p className="font-display font-semibold text-white">{data.name}</p>
+        <p className="text-sm text-white/60">
+          Count: <span className="font-medium text-white metric-number">{data.count.toLocaleString()}</span>
         </p>
         {data.conversionRate >= 0 && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-white/60">
             Conversion to next:{" "}
-            <span className="font-medium text-foreground">
+            <span className="font-medium text-white metric-number">
               {data.conversionRate.toFixed(1)}%
             </span>
           </p>
@@ -74,7 +74,7 @@ function ConversionLabel(props: any) {
     <text
       x={x + width + 8}
       y={y + 16}
-      fill="#6B7280"
+      fill="rgba(255,255,255,0.55)"
       fontSize={11}
     >
       {value.toFixed(1)}% &rarr;
@@ -95,16 +95,17 @@ export function FunnelChart({ data }: FunnelChartProps) {
             layout="vertical"
             margin={{ top: 5, right: 100, left: 20, bottom: 5 }}
           >
-            <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-            <XAxis type="number" />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" horizontal={false} />
+            <XAxis type="number" tick={{ fontSize: 12, fill: "rgba(255,255,255,0.55)" }} stroke="rgba(255,255,255,0.1)" />
             <YAxis
               dataKey="name"
               type="category"
               width={140}
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: "rgba(255,255,255,0.7)" }}
+              stroke="rgba(255,255,255,0.1)"
             />
-            <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="count" radius={[0, 4, 4, 0]} maxBarSize={36}>
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255,255,255,0.05)" }} />
+            <Bar dataKey="count" radius={[0, 8, 8, 0]} maxBarSize={36}>
               {data.map((_, index) => (
                 <Cell
                   key={`cell-${index}`}

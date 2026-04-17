@@ -299,12 +299,12 @@ export function QADashboard({ reviews, reps, repAverages }: Props) {
                     <TableCell><Badge variant={r.call_type === "setter" ? "default" : "secondary"}>{r.call_type}</Badge></TableCell>
                     <TableCell>{r.prospect_name || "N/A"}</TableCell>
                     <TableCell>
-                      <span className={cn("font-bold", (r.weighted_score || 0) >= 4 ? "text-green-600" : (r.weighted_score || 0) >= 3 ? "text-yellow-600" : "text-red-600")}>
+                      <span className={cn("font-bold", (r.weighted_score || 0) >= 4 ? "text-[#10B981]" : (r.weighted_score || 0) >= 3 ? "text-[#F59E0B]" : "text-[#EF4444]")}>
                         {r.weighted_score?.toFixed(2) || "0.00"}
                       </span>
                     </TableCell>
                     <TableCell>{af ? <Badge variant="destructive">Yes</Badge> : <Badge variant="success">No</Badge>}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{r.reviewer_name}</TableCell>
+                    <TableCell className="text-sm text-white/55">{r.reviewer_name}</TableCell>
                     <TableCell>
                       <Button variant="ghost" size="sm" onClick={() => { setSelectedReview(r); setViewOpen(true) }}>
                         <Eye className="h-4 w-4" />
@@ -315,7 +315,7 @@ export function QADashboard({ reviews, reps, repAverages }: Props) {
               })}
               {filteredReviews.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center text-muted-foreground py-8">No reviews found</TableCell>
+                  <TableCell colSpan={8} className="text-center text-white/55 py-8">No reviews found</TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -376,7 +376,7 @@ export function QADashboard({ reviews, reps, repAverages }: Props) {
                 <div key={r.key} className="flex items-center gap-4">
                   <div className="w-44 flex-shrink-0">
                     <p className="text-sm font-medium">{r.label}</p>
-                    <p className="text-xs text-muted-foreground">{(r.weight * 100).toFixed(0)}% weight</p>
+                    <p className="text-xs text-white/55">{(r.weight * 100).toFixed(0)}% weight</p>
                   </div>
                   <div className="flex gap-1">
                     {[1, 2, 3, 4, 5].map((score) => (
@@ -387,7 +387,7 @@ export function QADashboard({ reviews, reps, repAverages }: Props) {
                           "w-10 h-10 rounded-lg border text-sm font-medium transition-colors",
                           formScores[r.key] === score
                             ? "bg-blue-600 text-white border-blue-600"
-                            : "bg-white text-gray-700 border-gray-300 hover:border-blue-400"
+                            : "bg-white text-white/80 border-white/15 hover:border-blue-400"
                         )}
                         onClick={() => setFormScores({ ...formScores, [r.key]: score })}
                       >
@@ -395,7 +395,7 @@ export function QADashboard({ reviews, reps, repAverages }: Props) {
                       </button>
                     ))}
                   </div>
-                  <span className="text-sm text-muted-foreground w-24 text-right">
+                  <span className="text-sm text-white/55 w-24 text-right">
                     {formScores[r.key] ? `${formScores[r.key]} × ${(r.weight * 100).toFixed(0)}% = ${(formScores[r.key] * r.weight).toFixed(2)}` : "—"}
                   </span>
                 </div>
@@ -407,7 +407,7 @@ export function QADashboard({ reviews, reps, repAverages }: Props) {
             {/* Auto-Fail */}
             <div className="space-y-3">
               <h3 className="font-semibold flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-red-500" /> Auto-Fail Flags
+                <AlertTriangle className="h-4 w-4 text-[#EF4444]" /> Auto-Fail Flags
               </h3>
               {AUTO_FAIL_LABELS.map((label, i) => (
                 <div key={i} className="flex items-center gap-2">
@@ -423,7 +423,7 @@ export function QADashboard({ reviews, reps, repAverages }: Props) {
                 </div>
               ))}
               {hasAutoFail && (
-                <p className="text-sm text-red-600 font-medium">Auto-fail triggered — score will be 0</p>
+                <p className="text-sm text-[#EF4444] font-medium">Auto-fail triggered — score will be 0</p>
               )}
             </div>
 
@@ -437,11 +437,11 @@ export function QADashboard({ reviews, reps, repAverages }: Props) {
 
             {/* Score Display */}
             <div className="text-center p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground">Weighted Score</p>
+              <p className="text-sm text-white/55">Weighted Score</p>
               <p className={cn("text-4xl font-bold",
-                hasAutoFail ? "text-red-600" :
-                weightedScore >= 4 ? "text-green-600" :
-                weightedScore >= 3 ? "text-yellow-600" : "text-red-600"
+                hasAutoFail ? "text-[#EF4444]" :
+                weightedScore >= 4 ? "text-[#10B981]" :
+                weightedScore >= 3 ? "text-[#F59E0B]" : "text-[#EF4444]"
               )}>
                 {weightedScore.toFixed(2)}
               </p>
@@ -483,13 +483,13 @@ export function QADashboard({ reviews, reps, repAverages }: Props) {
             return (
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div><span className="text-muted-foreground">Rep:</span> {selectedReview.rep_name}</div>
-                  <div><span className="text-muted-foreground">Date:</span> {formatDate(selectedReview.date)}</div>
-                  <div><span className="text-muted-foreground">Type:</span> <Badge variant={selectedReview.call_type === "setter" ? "default" : "secondary"}>{selectedReview.call_type}</Badge></div>
-                  <div><span className="text-muted-foreground">Prospect:</span> {selectedReview.prospect_name || "N/A"}</div>
+                  <div><span className="text-white/55">Rep:</span> {selectedReview.rep_name}</div>
+                  <div><span className="text-white/55">Date:</span> {formatDate(selectedReview.date)}</div>
+                  <div><span className="text-white/55">Type:</span> <Badge variant={selectedReview.call_type === "setter" ? "default" : "secondary"}>{selectedReview.call_type}</Badge></div>
+                  <div><span className="text-white/55">Prospect:</span> {selectedReview.prospect_name || "N/A"}</div>
                 </div>
                 {selectedReview.recording_link && (
-                  <a href={selectedReview.recording_link} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 flex items-center gap-1">
+                  <a href={selectedReview.recording_link} target="_blank" rel="noopener noreferrer" className="text-sm text-[#60A5FA] flex items-center gap-1">
                     <ExternalLink className="h-3 w-3" /> Recording
                   </a>
                 )}
@@ -516,10 +516,10 @@ export function QADashboard({ reviews, reps, repAverages }: Props) {
                 </Table>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">Weighted Score</p>
+                    <p className="text-sm text-white/55">Weighted Score</p>
                     <p className={cn("text-2xl font-bold",
-                      (selectedReview.weighted_score || 0) >= 4 ? "text-green-600" :
-                      (selectedReview.weighted_score || 0) >= 3 ? "text-yellow-600" : "text-red-600"
+                      (selectedReview.weighted_score || 0) >= 4 ? "text-[#10B981]" :
+                      (selectedReview.weighted_score || 0) >= 3 ? "text-[#F59E0B]" : "text-[#EF4444]"
                     )}>
                       {selectedReview.weighted_score?.toFixed(2) || "0.00"}
                     </p>
@@ -529,10 +529,10 @@ export function QADashboard({ reviews, reps, repAverages }: Props) {
                 {selectedReview.coaching_notes && (
                   <div>
                     <p className="text-sm font-medium">Coaching Notes</p>
-                    <p className="text-sm text-muted-foreground mt-1">{selectedReview.coaching_notes}</p>
+                    <p className="text-sm text-white/55 mt-1">{selectedReview.coaching_notes}</p>
                   </div>
                 )}
-                <p className="text-xs text-muted-foreground">Reviewed by {selectedReview.reviewer_name}</p>
+                <p className="text-xs text-white/55">Reviewed by {selectedReview.reviewer_name}</p>
               </div>
             )
           })()}

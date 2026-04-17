@@ -95,7 +95,7 @@ export function EditRepForm({ rep }: Props) {
       {/* Back link */}
       <Link
         href={`/admin/reps/${rep.id}`}
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex items-center gap-1 text-sm text-white/55 hover:text-white"
       >
         <ArrowLeft className="h-4 w-4" /> Back to {rep.full_name}
       </Link>
@@ -152,7 +152,7 @@ export function EditRepForm({ rep }: Props) {
                 <Badge variant={rep.role === "setter" ? "default" : "secondary"} className="capitalize">
                   {rep.role}
                 </Badge>
-                <span className="text-sm text-muted-foreground">since {rep.hire_date ? formatDate(rep.hire_date) : "start"}</span>
+                <span className="text-sm text-white/55">since {rep.hire_date ? formatDate(rep.hire_date) : "start"}</span>
               </div>
             </div>
           </div>
@@ -183,7 +183,7 @@ export function EditRepForm({ rep }: Props) {
                 onChange={(e) => setCommissionRate(e.target.value)}
                 placeholder="e.g. 10"
               />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-white/55">
                 Enter as a whole number (e.g. 5 for 5%, 10 for 10%)
               </p>
             </div>
@@ -205,8 +205,8 @@ export function EditRepForm({ rep }: Props) {
 
           {/* Role change warning */}
           {roleChanged && (
-            <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-              <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+            <div className="flex items-start gap-3 p-4 bg-[#F59E0B]/8 border border-amber-200 rounded-lg">
+              <AlertTriangle className="h-5 w-5 text-[#F59E0B] mt-0.5 flex-shrink-0" />
               <div>
                 <p className="font-medium text-amber-800">Role Change: {originalRole} → {role}</p>
                 <ul className="mt-1 text-sm text-amber-700 space-y-1">
@@ -259,7 +259,7 @@ export function EditRepForm({ rep }: Props) {
           </div>
 
           {status !== "active" && (
-            <p className="text-sm text-amber-600">
+            <p className="text-sm text-[#F59E0B]">
               {status === "terminated"
                 ? "Terminated reps cannot log in. Their data will be preserved."
                 : "Inactive reps cannot log in. Reactivate them to restore access."}

@@ -170,7 +170,7 @@ export function RepComparison({ reps }: Props) {
                 </SelectContent>
               </Select>
             </div>
-            <span className="self-center text-muted-foreground font-medium">vs</span>
+            <span className="self-center text-white/55 font-medium">vs</span>
             <div className="w-56">
               <Select value={rep2Id} onValueChange={setRep2Id}>
                 <SelectTrigger><SelectValue placeholder="Select Rep 2" /></SelectTrigger>
@@ -217,10 +217,10 @@ export function RepComparison({ reps }: Props) {
                     return (
                       <TableRow key={m.key}>
                         <TableCell className="font-medium">{m.label}</TableCell>
-                        <TableCell className={cn("text-center font-medium", winner === 1 && "text-green-600 bg-green-50")}>
+                        <TableCell className={cn("text-center font-medium", winner === 1 && "text-[#10B981] bg-[#10B981]/8")}>
                           {formatValue(v1, m.format)}
                         </TableCell>
-                        <TableCell className={cn("text-center font-medium", winner === 2 && "text-green-600 bg-green-50")}>
+                        <TableCell className={cn("text-center font-medium", winner === 2 && "text-[#10B981] bg-[#10B981]/8")}>
                           {formatValue(v2, m.format)}
                         </TableCell>
                       </TableRow>
@@ -278,7 +278,7 @@ export function RepComparison({ reps }: Props) {
 
       {(!rep1Id || !rep2Id) && !loading && (
         <Card>
-          <CardContent className="py-12 text-center text-muted-foreground">
+          <CardContent className="py-12 text-center text-white/55">
             Select two reps to compare their performance
           </CardContent>
         </Card>

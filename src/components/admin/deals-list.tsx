@@ -76,9 +76,9 @@ type StatusFilter = "all" | DealStatus
 // ---------------------------------------------------------------------------
 
 const STATUS_BADGE_CLASS: Record<DealStatus, string> = {
-  active: "bg-green-100 text-green-800 border-green-200",
+  active: "bg-green-100 text-[#6EE7B7] border-green-200",
   refunded: "bg-yellow-100 text-yellow-800 border-yellow-200",
-  chargedback: "bg-red-100 text-red-800 border-red-200",
+  chargedback: "bg-red-100 text-[#FCA5A5] border-red-200",
 }
 
 const EMPTY_FORM: DealFormData = {
@@ -326,7 +326,7 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
           <div className="flex flex-wrap items-end gap-3">
             {/* Date Range */}
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">Start Date</Label>
+              <Label className="text-xs text-white/55">Start Date</Label>
               <Input
                 type="date"
                 value={startDate}
@@ -335,7 +335,7 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">End Date</Label>
+              <Label className="text-xs text-white/55">End Date</Label>
               <Input
                 type="date"
                 value={endDate}
@@ -346,7 +346,7 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
 
             {/* Setter Filter */}
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">Setter</Label>
+              <Label className="text-xs text-white/55">Setter</Label>
               <Select value={setterFilter} onValueChange={setSetterFilter}>
                 <SelectTrigger className="w-[160px]">
                   <SelectValue placeholder="All Setters" />
@@ -364,7 +364,7 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
 
             {/* Closer Filter */}
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">Closer</Label>
+              <Label className="text-xs text-white/55">Closer</Label>
               <Select value={closerFilter} onValueChange={setCloserFilter}>
                 <SelectTrigger className="w-[160px]">
                   <SelectValue placeholder="All Closers" />
@@ -382,7 +382,7 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
 
             {/* Status Filter */}
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">Status</Label>
+              <Label className="text-xs text-white/55">Status</Label>
               <Select
                 value={statusFilter}
                 onValueChange={(v) => setStatusFilter(v as StatusFilter)}
@@ -444,7 +444,7 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
                 <TableRow>
                   <TableCell
                     colSpan={11}
-                    className="text-center text-muted-foreground py-8"
+                    className="text-center text-white/55 py-8"
                   >
                     No deals found.
                   </TableCell>
@@ -525,7 +525,7 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
           </Table>
 
           {filteredDeals.length > 0 && (
-            <div className="mt-4 text-xs text-muted-foreground">
+            <div className="mt-4 text-xs text-white/55">
               Showing {filteredDeals.length} of {deals.length} deals
             </div>
           )}
@@ -584,7 +584,7 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="student_name">
-                  Student Name <span className="text-red-500">*</span>
+                  Student Name <span className="text-[#EF4444]">*</span>
                 </Label>
                 <Input
                   id="student_name"
@@ -654,10 +654,10 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="deal_value">
-                  Deal Value <span className="text-red-500">*</span>
+                  Deal Value <span className="text-[#EF4444]">*</span>
                 </Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-white/55">
                     $
                   </span>
                   <Input
@@ -675,7 +675,7 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
               <div className="space-y-2">
                 <Label htmlFor="cash_collected">Cash Collected</Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-white/55">
                     $
                   </span>
                   <Input
@@ -710,33 +710,33 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
             <div className="rounded-md border bg-muted/50 p-4 space-y-2">
               <p className="text-sm font-medium">
                 Commission Preview{" "}
-                <span className="font-normal text-muted-foreground">
+                <span className="font-normal text-white/55">
                   (estimated -- final values calculated on save)
                 </span>
               </p>
               {editingDeal ? (
                 <div className="grid grid-cols-4 gap-3 text-sm">
                   <div>
-                    <span className="text-muted-foreground">Setter</span>
+                    <span className="text-white/55">Setter</span>
                     <p className="font-medium">
                       {formatCurrency(editingDeal.setter_commission ?? 0)}
                     </p>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Closer</span>
+                    <span className="text-white/55">Closer</span>
                     <p className="font-medium">
                       {formatCurrency(editingDeal.closer_commission ?? 0)}
                     </p>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">PIF Bonus</span>
+                    <span className="text-white/55">PIF Bonus</span>
                     <p className="font-medium">
                       {formatCurrency(editingDeal.pif_bonus)}
                     </p>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Total</span>
-                    <p className="font-semibold text-green-700">
+                    <span className="text-white/55">Total</span>
+                    <p className="font-semibold text-[#10B981]">
                       {formatCurrency(editingDeal.total_commission ?? 0)}
                     </p>
                   </div>
@@ -744,26 +744,26 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
               ) : (
                 <div className="grid grid-cols-4 gap-3 text-sm">
                   <div>
-                    <span className="text-muted-foreground">Setter</span>
+                    <span className="text-white/55">Setter</span>
                     <p className="font-medium">
                       ~{formatCurrency(commissionPreview.setter)}
                     </p>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Closer</span>
+                    <span className="text-white/55">Closer</span>
                     <p className="font-medium">
                       ~{formatCurrency(commissionPreview.closer)}
                     </p>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">PIF Bonus</span>
+                    <span className="text-white/55">PIF Bonus</span>
                     <p className="font-medium">
                       ~{formatCurrency(commissionPreview.pif)}
                     </p>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Total</span>
-                    <p className="font-semibold text-green-700">
+                    <span className="text-white/55">Total</span>
+                    <p className="font-semibold text-[#10B981]">
                       ~{formatCurrency(commissionPreview.total)}
                     </p>
                   </div>
@@ -804,13 +804,13 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
             <div className="space-y-4 py-2">
               <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
                 <div>
-                  <span className="text-muted-foreground">Date Closed</span>
+                  <span className="text-white/55">Date Closed</span>
                   <p className="font-medium">
                     {formatDate(viewingDeal.date_closed)}
                   </p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Status</span>
+                  <span className="text-white/55">Status</span>
                   <p>
                     <Badge
                       variant="outline"
@@ -824,35 +824,35 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
                   </p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Student Name</span>
+                  <span className="text-white/55">Student Name</span>
                   <p className="font-medium">{viewingDeal.student_name}</p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Parent Name</span>
+                  <span className="text-white/55">Parent Name</span>
                   <p className="font-medium">
                     {viewingDeal.parent_name || "-"}
                   </p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Setter</span>
+                  <span className="text-white/55">Setter</span>
                   <p className="font-medium">
                     {viewingDeal.setter_name || "-"}
                   </p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Closer</span>
+                  <span className="text-white/55">Closer</span>
                   <p className="font-medium">
                     {viewingDeal.closer_name || "-"}
                   </p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Deal Value</span>
+                  <span className="text-white/55">Deal Value</span>
                   <p className="font-medium">
                     {formatCurrency(viewingDeal.deal_value)}
                   </p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Payment Plan</span>
+                  <span className="text-white/55">Payment Plan</span>
                   <p>
                     <Badge variant="outline" className="capitalize">
                       {viewingDeal.payment_plan}
@@ -860,13 +860,13 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
                   </p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Cash Collected</span>
+                  <span className="text-white/55">Cash Collected</span>
                   <p className="font-medium">
                     {formatCurrency(viewingDeal.cash_collected)}
                   </p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Payout Date</span>
+                  <span className="text-white/55">Payout Date</span>
                   <p className="font-medium">
                     {viewingDeal.payout_date
                       ? formatDate(viewingDeal.payout_date)
@@ -880,26 +880,26 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
                 <p className="text-sm font-medium">Commission Breakdown</p>
                 <div className="grid grid-cols-4 gap-3 text-sm">
                   <div>
-                    <span className="text-muted-foreground">Setter</span>
+                    <span className="text-white/55">Setter</span>
                     <p className="font-medium">
                       {formatCurrency(viewingDeal.setter_commission ?? 0)}
                     </p>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Closer</span>
+                    <span className="text-white/55">Closer</span>
                     <p className="font-medium">
                       {formatCurrency(viewingDeal.closer_commission ?? 0)}
                     </p>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">PIF Bonus</span>
+                    <span className="text-white/55">PIF Bonus</span>
                     <p className="font-medium">
                       {formatCurrency(viewingDeal.pif_bonus)}
                     </p>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Total</span>
-                    <p className="font-semibold text-green-700">
+                    <span className="text-white/55">Total</span>
+                    <p className="font-semibold text-[#10B981]">
                       {formatCurrency(viewingDeal.total_commission ?? 0)}
                     </p>
                   </div>
@@ -908,13 +908,13 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
 
               {/* Clawback info */}
               {viewingDeal.clawback && (
-                <div className="rounded-md border border-red-200 bg-red-50 p-4 text-sm">
-                  <p className="font-medium text-red-800">Clawback Active</p>
-                  <p className="text-red-700">
+                <div className="rounded-md border border-red-200 bg-[#EF4444]/8 p-4 text-sm">
+                  <p className="font-medium text-[#FCA5A5]">Clawback Active</p>
+                  <p className="text-[#FCA5A5]">
                     Amount: {formatCurrency(viewingDeal.clawback_amount)}
                   </p>
                   {viewingDeal.lost_reason && (
-                    <p className="text-red-700">
+                    <p className="text-[#FCA5A5]">
                       Reason: {viewingDeal.lost_reason}
                     </p>
                   )}
@@ -924,7 +924,7 @@ export function DealsList({ deals: initialDeals, reps }: DealsListProps) {
               {/* Notes */}
               {viewingDeal.notes && (
                 <div>
-                  <span className="text-sm text-muted-foreground">Notes</span>
+                  <span className="text-sm text-white/55">Notes</span>
                   <p className="mt-1 text-sm whitespace-pre-wrap rounded-md border bg-muted/30 p-3">
                     {viewingDeal.notes}
                   </p>

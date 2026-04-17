@@ -97,8 +97,8 @@ export default async function AdminQAPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#1B2A4A]">Call QA Reviews</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-2xl font-bold text-white">Call QA Reviews</h1>
+        <p className="text-sm text-white/55">
           Score calls, track quality metrics, and coach your team
         </p>
       </div>

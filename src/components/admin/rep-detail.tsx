@@ -79,11 +79,11 @@ const statusColors: Record<string, string> = {
 }
 
 const noteTypeColors: Record<string, string> = {
-  coaching: "bg-blue-100 text-blue-800",
+  coaching: "bg-blue-100 text-[#93C5FD]",
   verbal_warning: "bg-amber-100 text-amber-800",
-  pip: "bg-red-100 text-red-800",
-  positive: "bg-green-100 text-green-800",
-  general: "bg-gray-100 text-gray-800",
+  pip: "bg-red-100 text-[#FCA5A5]",
+  positive: "bg-green-100 text-[#6EE7B7]",
+  general: "bg-white/8 text-white/90",
 }
 
 export function RepDetail({ rep, performance, callReviews, deals, notes, weeklyData }: Props) {
@@ -211,30 +211,30 @@ export function RepDetail({ rep, performance, callReviews, deals, notes, weeklyD
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             <div>
-              <p className="text-sm text-muted-foreground">Hire Date</p>
+              <p className="text-sm text-white/55">Hire Date</p>
               <p className="font-medium">{rep.hire_date ? formatDate(rep.hire_date) : "N/A"}</p>
             </div>
             {rep.termination_date && (
               <div>
-                <p className="text-sm text-muted-foreground">Termination Date</p>
-                <p className="font-medium text-red-600">{formatDate(rep.termination_date)}</p>
+                <p className="text-sm text-white/55">Termination Date</p>
+                <p className="font-medium text-[#EF4444]">{formatDate(rep.termination_date)}</p>
               </div>
             )}
             <div>
-              <p className="text-sm text-muted-foreground">Commission Rate</p>
+              <p className="text-sm text-white/55">Commission Rate</p>
               <p className="font-medium">{rep.commission_rate ? `${(rep.commission_rate * 100).toFixed(1)}%` : "N/A"}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Total Deals</p>
+              <p className="text-sm text-white/55">Total Deals</p>
               <p className="font-medium">{totalDeals}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Total Commission</p>
-              <p className="font-medium text-green-600">{formatCurrency(totalCommission)}</p>
+              <p className="text-sm text-white/55">Total Commission</p>
+              <p className="font-medium text-[#10B981]">{formatCurrency(totalCommission)}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Avg QA Score</p>
-              <p className={cn("font-medium", avgQAScore >= 4 ? "text-green-600" : avgQAScore >= 3 ? "text-yellow-600" : "text-red-600")}>
+              <p className="text-sm text-white/55">Avg QA Score</p>
+              <p className={cn("font-medium", avgQAScore >= 4 ? "text-[#10B981]" : avgQAScore >= 3 ? "text-[#F59E0B]" : "text-[#EF4444]")}>
                 {callReviews.length > 0 ? avgQAScore.toFixed(2) : "N/A"}
               </p>
             </div>
@@ -242,17 +242,17 @@ export function RepDetail({ rep, performance, callReviews, deals, notes, weeklyD
           <Separator className="my-4" />
           <div className="flex gap-2">
             {rep.status !== "active" && (
-              <Button size="sm" variant="outline" className="text-green-600 border-green-600" onClick={() => handleStatusChange("active")}>
+              <Button size="sm" variant="outline" className="text-[#10B981] border-green-600" onClick={() => handleStatusChange("active")}>
                 <UserCheck className="h-4 w-4 mr-1" /> Activate
               </Button>
             )}
             {rep.status === "active" && (
-              <Button size="sm" variant="outline" className="text-yellow-600 border-yellow-600" onClick={() => handleStatusChange("inactive")}>
+              <Button size="sm" variant="outline" className="text-[#F59E0B] border-yellow-600" onClick={() => handleStatusChange("inactive")}>
                 <UserMinus className="h-4 w-4 mr-1" /> Deactivate
               </Button>
             )}
             {rep.status !== "terminated" && (
-              <Button size="sm" variant="outline" className="text-red-600 border-red-600" onClick={() => handleStatusChange("terminated")}>
+              <Button size="sm" variant="outline" className="text-[#EF4444] border-red-600" onClick={() => handleStatusChange("terminated")}>
                 <UserX className="h-4 w-4 mr-1" /> Terminate
               </Button>
             )}
@@ -288,7 +288,7 @@ export function RepDetail({ rep, performance, callReviews, deals, notes, weeklyD
                   </LineChart>
                 </ResponsiveContainer>
               ) : (
-                <p className="text-muted-foreground text-center py-8">No performance data yet</p>
+                <p className="text-white/55 text-center py-8">No performance data yet</p>
               )}
             </CardContent>
           </Card>
@@ -355,7 +355,7 @@ export function RepDetail({ rep, performance, callReviews, deals, notes, weeklyD
                   ))}
                   {weeklyData.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={8} className="text-center text-muted-foreground py-8">No weekly data</TableCell>
+                      <TableCell colSpan={8} className="text-center text-white/55 py-8">No weekly data</TableCell>
                     </TableRow>
                   )}
                 </TableBody>
@@ -371,8 +371,8 @@ export function RepDetail({ rep, performance, callReviews, deals, notes, weeklyD
               <div className="flex items-center justify-between">
                 <CardTitle>Call Reviews ({callReviews.length})</CardTitle>
                 {callReviews.length > 0 && (
-                  <p className="text-sm text-muted-foreground">
-                    Avg Score: <span className={cn("font-bold", avgQAScore >= 4 ? "text-green-600" : avgQAScore >= 3 ? "text-yellow-600" : "text-red-600")}>
+                  <p className="text-sm text-white/55">
+                    Avg Score: <span className={cn("font-bold", avgQAScore >= 4 ? "text-[#10B981]" : avgQAScore >= 3 ? "text-[#F59E0B]" : "text-[#EF4444]")}>
                       {avgQAScore.toFixed(2)}
                     </span>
                   </p>
@@ -400,7 +400,7 @@ export function RepDetail({ rep, performance, callReviews, deals, notes, weeklyD
                         <TableCell><Badge variant={r.call_type === "setter" ? "default" : "secondary"}>{r.call_type}</Badge></TableCell>
                         <TableCell>{r.prospect_name || "N/A"}</TableCell>
                         <TableCell>
-                          <span className={cn("font-bold", (r.weighted_score || 0) >= 4 ? "text-green-600" : (r.weighted_score || 0) >= 3 ? "text-yellow-600" : "text-red-600")}>
+                          <span className={cn("font-bold", (r.weighted_score || 0) >= 4 ? "text-[#10B981]" : (r.weighted_score || 0) >= 3 ? "text-[#F59E0B]" : "text-[#EF4444]")}>
                             {r.weighted_score?.toFixed(2) || "0.00"}
                           </span>
                         </TableCell>
@@ -411,7 +411,7 @@ export function RepDetail({ rep, performance, callReviews, deals, notes, weeklyD
                   })}
                   {callReviews.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center text-muted-foreground py-8">No call reviews yet</TableCell>
+                      <TableCell colSpan={6} className="text-center text-white/55 py-8">No call reviews yet</TableCell>
                     </TableRow>
                   )}
                 </TableBody>
@@ -463,7 +463,7 @@ export function RepDetail({ rep, performance, callReviews, deals, notes, weeklyD
                   })}
                   {deals.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center text-muted-foreground py-8">No deals yet</TableCell>
+                      <TableCell colSpan={6} className="text-center text-white/55 py-8">No deals yet</TableCell>
                     </TableRow>
                   )}
                 </TableBody>
@@ -528,7 +528,7 @@ export function RepDetail({ rep, performance, callReviews, deals, notes, weeklyD
                       <span className={cn("text-xs font-medium px-2 py-0.5 rounded-full", noteTypeColors[n.note_type])}>
                         {n.note_type.replace("_", " ")}
                       </span>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-white/55">
                         by {n.author_name} &middot; {formatDate(n.created_at)}
                       </span>
                     </div>
@@ -536,7 +536,7 @@ export function RepDetail({ rep, performance, callReviews, deals, notes, weeklyD
                   </div>
                 ))}
                 {notes.length === 0 && (
-                  <p className="text-center text-muted-foreground py-4">No notes yet</p>
+                  <p className="text-center text-white/55 py-4">No notes yet</p>
                 )}
               </div>
             </CardContent>
@@ -598,13 +598,13 @@ export function RepDetail({ rep, performance, callReviews, deals, notes, weeklyD
           {selectedReview && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-2 text-sm">
-                <div><span className="text-muted-foreground">Rep:</span> {rep.full_name}</div>
-                <div><span className="text-muted-foreground">Date:</span> {formatDate(selectedReview.date)}</div>
-                <div><span className="text-muted-foreground">Type:</span> <Badge variant={selectedReview.call_type === "setter" ? "default" : "secondary"}>{selectedReview.call_type}</Badge></div>
-                <div><span className="text-muted-foreground">Prospect:</span> {selectedReview.prospect_name || "N/A"}</div>
+                <div><span className="text-white/55">Rep:</span> {rep.full_name}</div>
+                <div><span className="text-white/55">Date:</span> {formatDate(selectedReview.date)}</div>
+                <div><span className="text-white/55">Type:</span> <Badge variant={selectedReview.call_type === "setter" ? "default" : "secondary"}>{selectedReview.call_type}</Badge></div>
+                <div><span className="text-white/55">Prospect:</span> {selectedReview.prospect_name || "N/A"}</div>
               </div>
               {selectedReview.recording_link && (
-                <a href={selectedReview.recording_link} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 flex items-center gap-1">
+                <a href={selectedReview.recording_link} target="_blank" rel="noopener noreferrer" className="text-sm text-[#60A5FA] flex items-center gap-1">
                   <ExternalLink className="h-3 w-3" /> Recording Link
                 </a>
               )}
@@ -663,10 +663,10 @@ export function RepDetail({ rep, performance, callReviews, deals, notes, weeklyD
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Weighted Score</p>
+                  <p className="text-sm text-white/55">Weighted Score</p>
                   <p className={cn("text-2xl font-bold",
-                    (selectedReview.weighted_score || 0) >= 4 ? "text-green-600" :
-                    (selectedReview.weighted_score || 0) >= 3 ? "text-yellow-600" : "text-red-600"
+                    (selectedReview.weighted_score || 0) >= 4 ? "text-[#10B981]" :
+                    (selectedReview.weighted_score || 0) >= 3 ? "text-[#F59E0B]" : "text-[#EF4444]"
                   )}>
                     {selectedReview.weighted_score?.toFixed(2) || "0.00"}
                   </p>
@@ -678,10 +678,10 @@ export function RepDetail({ rep, performance, callReviews, deals, notes, weeklyD
               {selectedReview.coaching_notes && (
                 <div>
                   <p className="text-sm font-medium">Coaching Notes</p>
-                  <p className="text-sm text-muted-foreground mt-1">{selectedReview.coaching_notes}</p>
+                  <p className="text-sm text-white/55 mt-1">{selectedReview.coaching_notes}</p>
                 </div>
               )}
-              <p className="text-xs text-muted-foreground">Reviewed by {selectedReview.reviewer_name}</p>
+              <p className="text-xs text-white/55">Reviewed by {selectedReview.reviewer_name}</p>
             </div>
           )}
         </DialogContent>

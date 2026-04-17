@@ -37,69 +37,57 @@ interface EarningsViewProps {
   deals: EarningsDeal[]
 }
 
+function MetricCard({
+  label,
+  value,
+  accent,
+}: {
+  label: string
+  value: string
+  accent?: "success" | "warning" | "danger"
+}) {
+  const accentClass =
+    accent === "success"
+      ? "text-[#10B981]"
+      : accent === "warning"
+        ? "text-[#F59E0B]"
+        : accent === "danger"
+          ? "text-[#EF4444]"
+          : "text-white"
+  const glow =
+    accent === "success"
+      ? "shadow-[0_0_24px_rgba(16,185,129,0.12)]"
+      : accent === "warning"
+        ? "shadow-[0_0_24px_rgba(245,158,11,0.12)]"
+        : ""
+  return (
+    <div className={`glass-card p-5 ${glow}`}>
+      <p className="text-[11px] uppercase tracking-wider font-semibold text-white/55">
+        {label}
+      </p>
+      <p className={`metric-number text-2xl font-bold mt-1.5 ${accentClass}`}>
+        {value}
+      </p>
+    </div>
+  )
+}
+
 export function EarningsView({ summary, deals }: EarningsViewProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">My Earnings</h1>
-        <p className="text-muted-foreground">
+        <h1 className="font-display text-2xl font-bold text-white tracking-tight">My Earnings</h1>
+        <p className="text-white/55">
           Track your commissions, bonuses, and payouts.
         </p>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Earned All-Time
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold text-green-600">
-              {formatCurrency(summary.totalAllTime)}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Earned This Month
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">
-              {formatCurrency(summary.totalThisMonth)}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Pending Payout
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold text-amber-600">
-              {formatCurrency(summary.totalPending)}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Paid Out
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">
-              {formatCurrency(summary.totalPaid)}
-            </p>
-          </CardContent>
-        </Card>
+        <MetricCard label="Total Earned All-Time" value={formatCurrency(summary.totalAllTime)} accent="success" />
+        <MetricCard label="Earned This Month" value={formatCurrency(summary.totalThisMonth)} />
+        <MetricCard label="Pending Payout" value={formatCurrency(summary.totalPending)} accent="warning" />
+        <MetricCard label="Total Paid Out" value={formatCurrency(summary.totalPaid)} />
       </div>
 
       {/* Deals Table */}
@@ -109,7 +97,7 @@ export function EarningsView({ summary, deals }: EarningsViewProps) {
         </CardHeader>
         <CardContent>
           {deals.length === 0 ? (
-            <p className="py-8 text-center text-muted-foreground">
+            <p className="py-8 text-center text-white/55">
               No deals found. Your commissions will appear here once deals are
               closed.
             </p>
@@ -128,17 +116,17 @@ export function EarningsView({ summary, deals }: EarningsViewProps) {
               <TableBody>
                 {deals.map((deal) => (
                   <TableRow key={deal.id}>
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell className="whitespace-nowrap text-white/70">
                       {formatDate(deal.date)}
                     </TableCell>
-                    <TableCell>{deal.studentName}</TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-white/90">{deal.studentName}</TableCell>
+                    <TableCell className="text-right metric-number text-white/80">
                       {formatCurrency(deal.dealValue)}
                     </TableCell>
-                    <TableCell className="text-right font-medium">
+                    <TableCell className="text-right metric-number font-semibold text-white">
                       {formatCurrency(deal.myCommission)}
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-right metric-number text-white/80">
                       {formatCurrency(deal.pifBonus)}
                     </TableCell>
                     <TableCell>
@@ -157,7 +145,7 @@ export function EarningsView({ summary, deals }: EarningsViewProps) {
                         {deal.payoutStatus === "Clawback" &&
                           deal.clawbackAmount !== undefined &&
                           deal.clawbackAmount > 0 && (
-                            <span className="text-xs font-medium text-red-600">
+                            <span className="text-xs font-medium text-[#FCA5A5] metric-number">
                               -{formatCurrency(deal.clawbackAmount)}
                             </span>
                           )}

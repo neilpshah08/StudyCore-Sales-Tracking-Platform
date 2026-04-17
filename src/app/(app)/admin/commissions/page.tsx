@@ -238,7 +238,7 @@ export default async function AdminCommissionsPage() {
         <h1 className="text-2xl font-bold tracking-tight">
           Commission Tracker
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-white/55">
           Track commission payouts, rate tiers, and rep earnings.
         </p>
       </div>

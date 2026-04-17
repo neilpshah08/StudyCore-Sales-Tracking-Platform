@@ -41,20 +41,20 @@ type SortKey = "name" | "role" | "status" | "weekKPI" | "monthKPI" | "closeOrBoo
 type SortDir = "asc" | "desc"
 
 const roleBadgeClass: Record<string, string> = {
-  setter: "bg-blue-100 text-blue-800 border-blue-200",
-  closer: "bg-purple-100 text-purple-800 border-purple-200",
+  setter: "bg-[#3B82F6]/15 text-[#93C5FD] border-[#3B82F6]/30",
+  closer: "bg-[#A78BFA]/15 text-[#C4B5FD] border-[#A78BFA]/30",
 }
 
 const statusBadgeClass: Record<string, string> = {
-  active: "bg-green-100 text-green-800 border-green-200",
-  inactive: "bg-gray-100 text-gray-600 border-gray-200",
-  terminated: "bg-red-100 text-red-800 border-red-200",
+  active: "bg-[#10B981]/15 text-[#6EE7B7] border-[#10B981]/30",
+  inactive: "bg-white/8 text-white/55 border-white/15",
+  terminated: "bg-[#EF4444]/15 text-[#FCA5A5] border-[#EF4444]/30",
 }
 
 function TrendIcon({ trend }: { trend: "up" | "down" | "flat" }) {
-  if (trend === "up") return <ArrowUp className="h-4 w-4 text-green-600" />
-  if (trend === "down") return <ArrowDown className="h-4 w-4 text-red-600" />
-  return <ArrowRight className="h-4 w-4 text-gray-400" />
+  if (trend === "up") return <ArrowUp className="h-4 w-4 text-[#10B981]" />
+  if (trend === "down") return <ArrowDown className="h-4 w-4 text-[#EF4444]" />
+  return <ArrowRight className="h-4 w-4 text-white/40" />
 }
 
 export function TeamPerformanceTable({ reps }: TeamPerformanceTableProps) {
@@ -110,7 +110,7 @@ export function TeamPerformanceTable({ reps }: TeamPerformanceTableProps) {
     >
       <span className="flex items-center gap-1">
         {label}
-        <ChevronsUpDown className="h-3 w-3 text-muted-foreground" />
+        <ChevronsUpDown className="h-3 w-3 text-white/55" />
       </span>
     </TableHead>
   )
@@ -161,7 +161,7 @@ export function TeamPerformanceTable({ reps }: TeamPerformanceTableProps) {
           <TableBody>
             {filteredAndSorted.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground">
+                <TableCell colSpan={7} className="text-center text-white/55">
                   No reps found.
                 </TableCell>
               </TableRow>
@@ -171,7 +171,7 @@ export function TeamPerformanceTable({ reps }: TeamPerformanceTableProps) {
                   <TableCell>
                     <Link
                       href={`/admin/reps/${rep.id}`}
-                      className="font-medium text-blue-600 hover:underline"
+                      className="font-medium text-[#60A5FA] hover:text-[#93C5FD] hover:underline"
                     >
                       {rep.name}
                     </Link>
@@ -208,11 +208,11 @@ export function TeamPerformanceTable({ reps }: TeamPerformanceTableProps) {
                         "font-medium",
                         rep.role === "closer"
                           ? rep.closeOrBookRate >= 0.3
-                            ? "text-green-600"
-                            : "text-red-600"
+                            ? "text-[#10B981]"
+                            : "text-[#EF4444]"
                           : rep.closeOrBookRate >= 0.4
-                          ? "text-green-600"
-                          : "text-red-600"
+                          ? "text-[#10B981]"
+                          : "text-[#EF4444]"
                       )}
                     >
                       {formatPercent(rep.closeOrBookRate)}

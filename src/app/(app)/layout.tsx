@@ -2,6 +2,7 @@ import { requireAuth } from "@/lib/auth";
 import { AuthProvider } from "@/lib/auth-context";
 import { Sidebar } from "@/components/layout/sidebar";
 import { TopBar } from "@/components/layout/top-bar";
+import { MobileNav } from "@/components/layout/mobile-nav";
 
 export default async function AppLayout({
   children,
@@ -20,12 +21,13 @@ export default async function AppLayout({
 
   return (
     <AuthProvider user={userData}>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen text-white">
         <Sidebar user={userData} />
         <div className="lg:pl-64">
           <TopBar title="" user={userData} />
-          <main className="p-4 md:p-6 lg:p-8">{children}</main>
+          <main className="p-4 pb-24 md:p-6 lg:p-8 lg:pb-8">{children}</main>
         </div>
+        <MobileNav role={userData.role} />
       </div>
     </AuthProvider>
   );

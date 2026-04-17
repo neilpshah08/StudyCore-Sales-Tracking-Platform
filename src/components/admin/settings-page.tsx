@@ -161,7 +161,7 @@ export function SettingsPage({ settings, commissionRates }: Props) {
             <div className="flex items-center justify-between">
               <div>
                 <Label className="text-base">Anonymous Leaderboard</Label>
-                <p className="text-sm text-muted-foreground">Show rep names as &ldquo;Rep 1&rdquo;, &ldquo;Rep 2&rdquo; etc.</p>
+                <p className="text-sm text-white/55">Show rep names as &ldquo;Rep 1&rdquo;, &ldquo;Rep 2&rdquo; etc.</p>
               </div>
               <Switch checked={leaderboardMode} onCheckedChange={setLeaderboardMode} />
             </div>

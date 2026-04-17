@@ -161,34 +161,34 @@ export function RefundsDashboard({
       title: "Refunds This Month",
       value: String(summary.total_refunds_this_month),
       icon: RotateCcw,
-      colorClass: "text-[#1B2A4A]",
+      colorClass: "text-white",
       bgClass: "bg-white",
-      iconClass: "text-muted-foreground",
+      iconClass: "text-white/55",
     },
     {
       title: "Total Refund Amount",
       value: formatCurrency(summary.total_refund_amount),
       icon: DollarSign,
-      colorClass: "text-red-600",
+      colorClass: "text-[#EF4444]",
       bgClass: "bg-white",
-      iconClass: "text-muted-foreground",
+      iconClass: "text-white/55",
     },
     {
       title: "Refund Rate (30-day)",
       value: formatPercent(summary.refund_rate),
       icon: TrendingUp,
-      colorClass: summary.refund_rate > 0.1 ? "text-red-600" : "text-green-600",
+      colorClass: summary.refund_rate > 0.1 ? "text-[#EF4444]" : "text-[#10B981]",
       bgClass: "bg-white",
-      iconClass: "text-muted-foreground",
+      iconClass: "text-white/55",
       alert: summary.refund_rate > 0.1,
     },
     {
       title: "Total Clawbacks",
       value: formatCurrency(summary.total_clawbacks),
       icon: AlertTriangle,
-      colorClass: "text-red-600",
+      colorClass: "text-[#EF4444]",
       bgClass: "bg-white",
-      iconClass: "text-muted-foreground",
+      iconClass: "text-white/55",
     },
   ]
 
@@ -413,7 +413,7 @@ export function RefundsDashboard({
           return (
             <Card key={card.title} className={card.bgClass}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
+                <CardTitle className="text-sm font-medium text-white/55">
                   {card.title}
                 </CardTitle>
                 <div className="flex items-center gap-1">
@@ -507,7 +507,7 @@ export function RefundsDashboard({
           {/* Filters */}
           <div className="flex flex-wrap items-end gap-3">
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">Start Date</Label>
+              <Label className="text-xs text-white/55">Start Date</Label>
               <Input
                 type="date"
                 value={startDate}
@@ -516,7 +516,7 @@ export function RefundsDashboard({
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">End Date</Label>
+              <Label className="text-xs text-white/55">End Date</Label>
               <Input
                 type="date"
                 value={endDate}
@@ -525,7 +525,7 @@ export function RefundsDashboard({
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">Reason</Label>
+              <Label className="text-xs text-white/55">Reason</Label>
               <Select value={reasonFilter} onValueChange={setReasonFilter}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="All Reasons" />
@@ -541,7 +541,7 @@ export function RefundsDashboard({
               </Select>
             </div>
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">Closer</Label>
+              <Label className="text-xs text-white/55">Closer</Label>
               <Select value={closerFilter} onValueChange={setCloserFilter}>
                 <SelectTrigger className="w-[160px]">
                   <SelectValue placeholder="All Closers" />
@@ -583,7 +583,7 @@ export function RefundsDashboard({
                 <TableRow>
                   <TableCell
                     colSpan={8}
-                    className="text-center text-muted-foreground py-8"
+                    className="text-center text-white/55 py-8"
                   >
                     No refunds found.
                   </TableCell>
@@ -600,7 +600,7 @@ export function RefundsDashboard({
                     <TableCell className="text-right">
                       {formatCurrency(refund.deal_value)}
                     </TableCell>
-                    <TableCell className="text-right text-red-600 font-medium">
+                    <TableCell className="text-right text-[#EF4444] font-medium">
                       {formatCurrency(refund.refund_amount)}
                     </TableCell>
                     <TableCell>
@@ -609,10 +609,10 @@ export function RefundsDashboard({
                       </Badge>
                     </TableCell>
                     <TableCell>{refund.closer_name ?? "-"}</TableCell>
-                    <TableCell className="text-right text-red-600">
+                    <TableCell className="text-right text-[#EF4444]">
                       {formatCurrency(refund.setter_clawback)}
                     </TableCell>
-                    <TableCell className="text-right text-red-600">
+                    <TableCell className="text-right text-[#EF4444]">
                       {formatCurrency(refund.closer_clawback)}
                     </TableCell>
                   </TableRow>
@@ -622,7 +622,7 @@ export function RefundsDashboard({
           </Table>
 
           {filteredRefunds.length > 0 && (
-            <div className="text-xs text-muted-foreground">
+            <div className="text-xs text-white/55">
               Showing {filteredRefunds.length} of {refunds.length} refunds
             </div>
           )}
@@ -644,7 +644,7 @@ export function RefundsDashboard({
             {/* Select Deal */}
             <div className="space-y-2">
               <Label htmlFor="refund_deal">
-                Select Deal <span className="text-red-500">*</span>
+                Select Deal <span className="text-[#EF4444]">*</span>
               </Label>
               <Select
                 value={refundForm.deal_id || "none"}
@@ -670,10 +670,10 @@ export function RefundsDashboard({
             {/* Refund Amount */}
             <div className="space-y-2">
               <Label htmlFor="refund_amount">
-                Refund Amount <span className="text-red-500">*</span>
+                Refund Amount <span className="text-[#EF4444]">*</span>
               </Label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-white/55">
                   $
                 </span>
                 <Input
@@ -696,7 +696,7 @@ export function RefundsDashboard({
             {/* Reason */}
             <div className="space-y-2">
               <Label htmlFor="refund_reason">
-                Reason <span className="text-red-500">*</span>
+                Reason <span className="text-[#EF4444]">*</span>
               </Label>
               <Select
                 value={refundForm.reason || "none"}
@@ -744,7 +744,7 @@ export function RefundsDashboard({
                 <p className="text-sm font-medium">Clawback Preview</p>
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div>
-                    <span className="text-muted-foreground">
+                    <span className="text-white/55">
                       Days Since Close
                     </span>
                     <p className="font-medium">
@@ -752,31 +752,31 @@ export function RefundsDashboard({
                     </p>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Policy</span>
+                    <span className="text-white/55">Policy</span>
                     <p className="font-medium">{clawbackPreview.policy}</p>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">
+                    <span className="text-white/55">
                       Setter Clawback
                     </span>
-                    <p className="font-medium text-red-600">
+                    <p className="font-medium text-[#EF4444]">
                       {formatCurrency(clawbackPreview.setterClawback)}
                     </p>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">
+                    <span className="text-white/55">
                       Closer Clawback
                     </span>
-                    <p className="font-medium text-red-600">
+                    <p className="font-medium text-[#EF4444]">
                       {formatCurrency(clawbackPreview.closerClawback)}
                     </p>
                   </div>
                 </div>
                 <div className="border-t pt-2">
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm text-white/55">
                     Total Clawback
                   </span>
-                  <p className="text-lg font-bold text-red-600">
+                  <p className="text-lg font-bold text-[#EF4444]">
                     {formatCurrency(clawbackPreview.totalClawback)}
                   </p>
                 </div>

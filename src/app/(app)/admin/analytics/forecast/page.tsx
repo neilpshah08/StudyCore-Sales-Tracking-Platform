@@ -53,8 +53,8 @@ export default async function ForecastPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#1B2A4A]">Revenue Forecast</h1>
-        <p className="text-sm text-muted-foreground">Forward-looking revenue projection</p>
+        <h1 className="text-2xl font-bold text-white">Revenue Forecast</h1>
+        <p className="text-sm text-white/55">Forward-looking revenue projection</p>
       </div>
       <RevenueForecast
         pipeline={{ demosInPipeline, offersInPipeline: 0 }}

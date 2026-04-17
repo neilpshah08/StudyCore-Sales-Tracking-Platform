@@ -89,7 +89,7 @@ export function LogDealDialog({ closerId }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2">
+        <Button variant="success" className="gap-2 h-11 px-5">
           <Plus className="h-4 w-4" /> Log a Deal
         </Button>
       </DialogTrigger>
@@ -179,7 +179,7 @@ export function LogDealDialog({ closerId }: Props) {
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={saving || !studentName || !dealValue}>
+            <Button type="submit" variant="success" disabled={saving || !studentName || !dealValue}>
               {saving ? (
                 <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Saving...</>
               ) : (

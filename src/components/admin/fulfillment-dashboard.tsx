@@ -113,7 +113,7 @@ export function FulfillmentDashboard({ summary, records }: Props) {
           <CardContent className="pt-6">
             <div className="flex items-center gap-2 mb-1">
               <Users className="h-4 w-4 text-blue-500" />
-              <p className="text-sm text-muted-foreground">Active Students</p>
+              <p className="text-sm text-white/55">Active Students</p>
             </div>
             <p className="text-2xl font-bold">{summary.totalActiveStudents}</p>
           </CardContent>
@@ -122,7 +122,7 @@ export function FulfillmentDashboard({ summary, records }: Props) {
           <CardContent className="pt-6">
             <div className="flex items-center gap-2 mb-1">
               <Clock className="h-4 w-4 text-blue-500" />
-              <p className="text-sm text-muted-foreground">Avg Days to 1st Session</p>
+              <p className="text-sm text-white/55">Avg Days to 1st Session</p>
             </div>
             <p className="text-2xl font-bold">{summary.avgDaysToFirstSession}</p>
           </CardContent>
@@ -130,19 +130,19 @@ export function FulfillmentDashboard({ summary, records }: Props) {
         <Card className={cn(summary.onboardingDelayCount > 0 && "border-amber-400")}>
           <CardContent className="pt-6">
             <div className="flex items-center gap-2 mb-1">
-              <AlertTriangle className="h-4 w-4 text-amber-500" />
-              <p className="text-sm text-muted-foreground">Onboarding Delay</p>
+              <AlertTriangle className="h-4 w-4 text-[#F59E0B]" />
+              <p className="text-sm text-white/55">Onboarding Delay</p>
             </div>
-            <p className={cn("text-2xl font-bold", summary.onboardingDelayCount > 0 && "text-amber-600")}>{summary.onboardingDelayCount}</p>
+            <p className={cn("text-2xl font-bold", summary.onboardingDelayCount > 0 && "text-[#F59E0B]")}>{summary.onboardingDelayCount}</p>
           </CardContent>
         </Card>
         <Card className={cn(summary.atRiskCount > 0 && "border-red-400")}>
           <CardContent className="pt-6">
             <div className="flex items-center gap-2 mb-1">
-              <AlertCircle className="h-4 w-4 text-red-500" />
-              <p className="text-sm text-muted-foreground">At-Risk</p>
+              <AlertCircle className="h-4 w-4 text-[#EF4444]" />
+              <p className="text-sm text-white/55">At-Risk</p>
             </div>
-            <p className={cn("text-2xl font-bold", summary.atRiskCount > 0 && "text-red-600")}>{summary.atRiskCount}</p>
+            <p className={cn("text-2xl font-bold", summary.atRiskCount > 0 && "text-[#EF4444]")}>{summary.atRiskCount}</p>
           </CardContent>
         </Card>
       </div>
@@ -171,7 +171,7 @@ export function FulfillmentDashboard({ summary, records }: Props) {
                 const isDelay = r.days_since_close > 3 && !r.first_session_scheduled
                 const isCritical = r.days_since_close > 7 && r.status === "pending_onboarding"
                 return (
-                  <TableRow key={r.deal_id} className={cn(isCritical && "bg-red-50")}>
+                  <TableRow key={r.deal_id} className={cn(isCritical && "bg-[#EF4444]/8")}>
                     <TableCell className="font-medium">{r.student_name}</TableCell>
                     <TableCell>{formatDate(r.date_closed)}</TableCell>
                     <TableCell>{r.days_since_close}</TableCell>
@@ -195,7 +195,7 @@ export function FulfillmentDashboard({ summary, records }: Props) {
                 )
               })}
               {records.length === 0 && (
-                <TableRow><TableCell colSpan={10} className="text-center text-muted-foreground py-8">No active deals</TableCell></TableRow>
+                <TableRow><TableCell colSpan={10} className="text-center text-white/55 py-8">No active deals</TableCell></TableRow>
               )}
             </TableBody>
           </Table>

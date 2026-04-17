@@ -260,15 +260,15 @@ export default async function DashboardPage() {
         {/* 1. Welcome header with streak + Log Deal button for closers */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-1">
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-foreground">
-                Welcome back, {profile.full_name}
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="font-display text-2xl font-bold text-white tracking-tight">
+                Welcome back, <span className="bg-gradient-to-r from-[#60A5FA] to-[#A78BFA] bg-clip-text text-transparent">{profile.full_name}</span>
               </h1>
-              <Badge variant={role === "setter" ? "default" : "secondary"}>
+              <Badge variant={role === "setter" ? "default" : "success"}>
                 {role.charAt(0).toUpperCase() + role.slice(1)}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground">{formatDate(today)}</p>
+            <p className="text-sm text-white/55">{formatDate(today)}</p>
           </div>
           <div className="flex items-center gap-3">
             {role === "closer" && <LogDealDialog closerId={profile.id} />}

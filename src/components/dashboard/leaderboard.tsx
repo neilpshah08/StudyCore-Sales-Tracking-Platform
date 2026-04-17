@@ -58,7 +58,7 @@ export function Leaderboard({
       </CardHeader>
       <CardContent>
         {sorted.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-4">
+          <p className="text-sm text-white/55 text-center py-4">
             No leaderboard data available yet.
           </p>
         ) : (
@@ -84,28 +84,28 @@ export function Leaderboard({
                   <TableRow
                     key={entry.user_id}
                     className={cn(
-                      isCurrentUser && "bg-blue-50 font-medium"
+                      isCurrentUser && "bg-[#3B82F6]/10 font-medium shadow-[inset_0_0_0_1px_rgba(59,130,246,0.25)]"
                     )}
                   >
                     <TableCell className="text-center">
-                      <span className={cn(rank <= 3 && "text-lg")}>
+                      <span className={cn(rank <= 3 ? "text-lg" : "metric-number text-white/70")}>
                         {getRankDisplay(rank)}
                       </span>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="text-white/90">
                       {anonymous && !isCurrentUser
                         ? `Rep ${rank}`
                         : entry.full_name}
                       {isCurrentUser && (
-                        <span className="ml-2 text-xs text-blue-600">(You)</span>
+                        <span className="ml-2 text-xs text-[#60A5FA]">(You)</span>
                       )}
                     </TableCell>
-                    <TableCell className="text-right font-medium">
+                    <TableCell className="text-right metric-number font-semibold text-white">
                       {role === "setter"
                         ? entry.total_bookings
                         : formatCurrency(entry.total_cash_collected)}
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-right metric-number text-white/70">
                       {role === "setter"
                         ? formatPercent(entry.contact_rate)
                         : formatPercent(entry.close_rate)}

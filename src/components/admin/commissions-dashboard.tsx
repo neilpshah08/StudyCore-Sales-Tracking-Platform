@@ -150,25 +150,25 @@ export function CommissionsDashboard({
       title: "Total Commission Owed",
       value: formatCurrency(summary.total_owed),
       icon: DollarSign,
-      colorClass: "text-amber-600",
-      bgClass: "bg-amber-50 border-amber-200",
-      iconClass: "text-amber-500",
+      colorClass: "text-[#F59E0B]",
+      bgClass: "bg-[#F59E0B]/8 border-amber-200",
+      iconClass: "text-[#F59E0B]",
     },
     {
       title: "Total Paid This Month",
       value: formatCurrency(summary.total_paid_this_month),
       icon: CheckCircle2,
-      colorClass: "text-green-600",
-      bgClass: "bg-green-50 border-green-200",
+      colorClass: "text-[#10B981]",
+      bgClass: "bg-[#10B981]/8 border-green-200",
       iconClass: "text-green-500",
     },
     {
       title: "Total Clawbacks",
       value: formatCurrency(summary.total_clawbacks),
       icon: AlertTriangle,
-      colorClass: "text-red-600",
-      bgClass: "bg-red-50 border-red-200",
-      iconClass: "text-red-500",
+      colorClass: "text-[#EF4444]",
+      bgClass: "bg-[#EF4444]/8 border-red-200",
+      iconClass: "text-[#EF4444]",
     },
   ]
 
@@ -391,7 +391,7 @@ export function CommissionsDashboard({
           return (
             <Card key={card.title} className={cn("border", card.bgClass)}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
+                <CardTitle className="text-sm font-medium text-white/55">
                   {card.title}
                 </CardTitle>
                 <Icon className={cn("h-5 w-5", card.iconClass)} />
@@ -442,7 +442,7 @@ export function CommissionsDashboard({
                     <TableRow>
                       <TableCell
                         colSpan={7}
-                        className="text-center text-muted-foreground py-8"
+                        className="text-center text-white/55 py-8"
                       >
                         No commission data found.
                       </TableCell>
@@ -477,8 +477,8 @@ export function CommissionsDashboard({
                             className={cn(
                               "font-medium",
                               rep.total_outstanding > 0
-                                ? "text-amber-600"
-                                : "text-green-600"
+                                ? "text-[#F59E0B]"
+                                : "text-[#10B981]"
                             )}
                           >
                             {formatCurrency(rep.total_outstanding)}
@@ -531,7 +531,7 @@ export function CommissionsDashboard({
                     <TableRow>
                       <TableCell
                         colSpan={7}
-                        className="text-center text-muted-foreground py-8"
+                        className="text-center text-white/55 py-8"
                       >
                         No commission rate tiers found.
                       </TableCell>
@@ -607,7 +607,7 @@ export function CommissionsDashboard({
                     <TableRow>
                       <TableCell
                         colSpan={6}
-                        className="text-center text-muted-foreground py-8"
+                        className="text-center text-white/55 py-8"
                       >
                         No payout records found.
                       </TableCell>
@@ -655,7 +655,7 @@ export function CommissionsDashboard({
             <div className="space-y-2">
               <Label htmlFor="payout_amount">Amount</Label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-white/55">
                   $
                 </span>
                 <Input
@@ -764,7 +764,7 @@ export function CommissionsDashboard({
 
               <div className="space-y-2">
                 <Label htmlFor="rate_label">
-                  Label <span className="text-red-500">*</span>
+                  Label <span className="text-[#EF4444]">*</span>
                 </Label>
                 <Input
                   id="rate_label"
@@ -783,7 +783,7 @@ export function CommissionsDashboard({
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="rate_rate">
-                  Rate (decimal) <span className="text-red-500">*</span>
+                  Rate (decimal) <span className="text-[#EF4444]">*</span>
                 </Label>
                 <Input
                   id="rate_rate"
@@ -804,7 +804,7 @@ export function CommissionsDashboard({
 
               <div className="space-y-2">
                 <Label htmlFor="rate_pif_bonus">
-                  PIF Bonus Rate <span className="text-red-500">*</span>
+                  PIF Bonus Rate <span className="text-[#EF4444]">*</span>
                 </Label>
                 <Input
                   id="rate_pif_bonus"
@@ -846,7 +846,7 @@ export function CommissionsDashboard({
 
               <div className="space-y-2">
                 <Label htmlFor="rate_effective_date">
-                  Effective Date <span className="text-red-500">*</span>
+                  Effective Date <span className="text-[#EF4444]">*</span>
                 </Label>
                 <Input
                   id="rate_effective_date"

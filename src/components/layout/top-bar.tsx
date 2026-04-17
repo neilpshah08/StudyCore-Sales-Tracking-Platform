@@ -25,7 +25,6 @@ export function TopBar({ title, user }: TopBarProps) {
   const [hasFetchedFull, setHasFetchedFull] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Lightweight count-only fetch — runs once per mount, throttled to 30s
   useEffect(() => {
     const now = Date.now();
     if (cachedUnreadCount !== null && now - lastCountFetch < 30_000) {
@@ -47,7 +46,6 @@ export function TopBar({ title, user }: TopBarProps) {
       });
   }, [user.id]);
 
-  // Full notification fetch — only when dropdown opens
   const fetchNotifications = useCallback(async () => {
     if (hasFetchedFull) return;
     const supabase = createClient();
@@ -115,16 +113,18 @@ export function TopBar({ title, user }: TopBarProps) {
   };
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b bg-white px-4 md:px-6">
+    <header className="sticky top-0 z-20 flex h-16 items-center justify-between glass-topbar px-4 md:px-6">
       {/* Mobile: hamburger placeholder + centered brand */}
       <div className="flex items-center gap-3 lg:hidden">
         <div className="h-9 w-9" />
-        <span className="text-lg font-bold text-[#1B2A4A]">StudyCore</span>
+        <span className="font-display text-lg font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
+          StudyCore
+        </span>
       </div>
 
       {/* Desktop: page title */}
       <div className="hidden lg:block">
-        <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
+        <h1 className="font-display text-lg font-semibold text-white">{title}</h1>
       </div>
 
       {/* Right side: notification bell */}
@@ -134,12 +134,12 @@ export function TopBar({ title, user }: TopBarProps) {
             setDropdownOpen(!dropdownOpen);
             if (!dropdownOpen) setHasFetchedFull(false);
           }}
-          className="relative rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
+          className="relative rounded-xl border border-white/8 bg-white/5 p-2 text-white/70 backdrop-blur-md transition-colors hover:bg-white/10 hover:text-white"
           aria-label="Notifications"
         >
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
-            <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+            <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-[#EF4444] px-1 text-[10px] font-bold text-white shadow-[0_0_12px_rgba(239,68,68,0.6)]">
               {unreadCount > 99 ? "99+" : unreadCount}
             </span>
           )}
@@ -147,15 +147,15 @@ export function TopBar({ title, user }: TopBarProps) {
 
         {/* Notification dropdown */}
         {dropdownOpen && (
-          <div className="absolute right-0 top-full mt-2 w-80 overflow-hidden rounded-lg border bg-white shadow-lg">
-            <div className="flex items-center justify-between border-b px-4 py-3">
-              <h3 className="text-sm font-semibold text-gray-900">
+          <div className="absolute right-0 top-full mt-2 w-80 overflow-hidden rounded-2xl border border-white/10 bg-slate-900/90 backdrop-blur-2xl backdrop-saturate-150 shadow-[0_18px_50px_rgba(0,0,0,0.5)]">
+            <div className="flex items-center justify-between border-b border-white/8 px-4 py-3">
+              <h3 className="font-display text-sm font-semibold text-white">
                 Notifications
               </h3>
               {unreadCount > 0 && (
                 <button
                   onClick={markAllAsRead}
-                  className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800"
+                  className="flex items-center gap-1 text-xs text-[#60A5FA] hover:text-[#93C5FD]"
                 >
                   <Check className="h-3 w-3" />
                   Mark all read
@@ -165,7 +165,7 @@ export function TopBar({ title, user }: TopBarProps) {
 
             <div className="max-h-80 overflow-y-auto">
               {notifications.length === 0 ? (
-                <div className="px-4 py-8 text-center text-sm text-gray-500">
+                <div className="px-4 py-8 text-center text-sm text-white/50">
                   No notifications yet
                 </div>
               ) : (
@@ -173,8 +173,8 @@ export function TopBar({ title, user }: TopBarProps) {
                   <div
                     key={notification.id}
                     className={cn(
-                      "border-b px-4 py-3 last:border-b-0",
-                      !notification.read && "bg-blue-50/50"
+                      "border-b border-white/8 px-4 py-3 last:border-b-0 transition-colors hover:bg-white/5",
+                      !notification.read && "bg-[#3B82F6]/8"
                     )}
                   >
                     <div className="flex items-start justify-between gap-2">
@@ -183,23 +183,23 @@ export function TopBar({ title, user }: TopBarProps) {
                           className={cn(
                             "truncate text-sm",
                             !notification.read
-                              ? "font-medium text-gray-900"
-                              : "text-gray-700"
+                              ? "font-medium text-white"
+                              : "text-white/75"
                           )}
                         >
                           {notification.title}
                         </p>
-                        <p className="mt-0.5 line-clamp-2 text-xs text-gray-500">
+                        <p className="mt-0.5 line-clamp-2 text-xs text-white/55">
                           {notification.message}
                         </p>
                       </div>
-                      <span className="shrink-0 text-[10px] text-gray-400">
+                      <span className="shrink-0 text-[10px] text-white/40">
                         {formatTimeAgo(notification.created_at)}
                       </span>
                     </div>
                     {!notification.read && (
                       <div className="mt-1 flex justify-end">
-                        <span className="h-2 w-2 rounded-full bg-blue-500" />
+                        <span className="h-2 w-2 rounded-full bg-[#3B82F6] shadow-[0_0_8px_rgba(59,130,246,0.7)]" />
                       </div>
                     )}
                   </div>

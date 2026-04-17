@@ -73,7 +73,7 @@ export default async function AdminRepsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Rep Management</h1>
-        <p className="text-muted-foreground">
+        <p className="text-white/55">
           Manage your sales team members, view performance, and track status.
         </p>
       </div>

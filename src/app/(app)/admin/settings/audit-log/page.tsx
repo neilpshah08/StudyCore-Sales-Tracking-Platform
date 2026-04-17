@@ -26,8 +26,8 @@ export default async function AuditLogPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#1B2A4A]">Audit Log</h1>
-        <p className="text-sm text-muted-foreground">Track all changes made across the platform</p>
+        <h1 className="text-2xl font-bold text-white">Audit Log</h1>
+        <p className="text-sm text-white/55">Track all changes made across the platform</p>
       </div>
       <AuditLogView entries={entries} />
     </div>

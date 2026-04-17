@@ -85,10 +85,12 @@ export default function LoginPage() {
   return (
     <Card>
       <CardHeader className="text-center space-y-1">
-        <h1 className="text-3xl font-bold" style={{ color: '#1B2A4A' }}>
-          StudyCore
+        <h1 className="font-display text-3xl font-bold tracking-tight">
+          <span className="bg-gradient-to-r from-[#60A5FA] via-white to-[#A78BFA] bg-clip-text text-transparent">
+            StudyCore
+          </span>
         </h1>
-        <p className="text-sm text-muted-foreground">Sales Tracker</p>
+        <p className="text-sm text-white/55">Sales Tracker</p>
       </CardHeader>
 
       <form onSubmit={handleSubmit}>
@@ -122,14 +124,14 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <p className="text-sm text-red-600">{error}</p>
+            <p className="text-sm text-[#FCA5A5]">{error}</p>
           )}
         </CardContent>
 
         <CardFooter>
           <Button
             type="submit"
-            className="w-full bg-[#1B2A4A] hover:bg-[#2A3F6A] text-white"
+            className="w-full"
             disabled={loading}
           >
             {loading ? 'Signing in...' : 'Sign In'}

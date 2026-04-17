@@ -97,7 +97,7 @@ export function GoalSetter({ userId, role, weekStart, existingGoals = [] }: Goal
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {fields.map((field) => (
             <div key={field.key} className="space-y-1">
-              <Label htmlFor={`goal-${field.key}`} className="text-xs text-muted-foreground">
+              <Label htmlFor={`goal-${field.key}`} className="text-xs text-white/60 uppercase tracking-wider font-semibold">
                 {field.label}
               </Label>
               <Input

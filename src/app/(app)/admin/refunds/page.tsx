@@ -220,7 +220,7 @@ export default async function AdminRefundsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Refund Tracker</h1>
-        <p className="text-muted-foreground">
+        <p className="text-white/55">
           Process refunds, track clawbacks, and monitor refund trends.
         </p>
       </div>

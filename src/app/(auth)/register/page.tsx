@@ -146,7 +146,7 @@ export default function RegisterPage() {
   if (checkingAuth || !authorized) {
     return (
       <Card>
-        <CardContent className="p-6 text-center text-muted-foreground">
+        <CardContent className="p-6 text-center text-white/55">
           Verifying permissions...
         </CardContent>
       </Card>
@@ -250,7 +250,7 @@ export default function RegisterPage() {
               required
               disabled={loading}
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-white/55">
               Enter as a whole number (e.g. 5 for 5%, 10 for 10%). Stored as 0.05, 0.10, etc.
             </p>
           </div>
@@ -269,14 +269,14 @@ export default function RegisterPage() {
           </div>
 
           {error && (
-            <p className="text-sm text-red-600">{error}</p>
+            <p className="text-sm text-[#FCA5A5]">{error}</p>
           )}
         </CardContent>
 
         <CardFooter>
           <Button
             type="submit"
-            className="w-full bg-[#1B2A4A] hover:bg-[#2A3F6A] text-white"
+            className="w-full"
             disabled={loading}
           >
             {loading ? 'Creating Account...' : 'Create Account'}

@@ -79,8 +79,8 @@ export default async function LostDealsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#1B2A4A]">Lost Deal Analysis</h1>
-        <p className="text-sm text-muted-foreground">Understand why deals are lost and identify patterns</p>
+        <h1 className="text-2xl font-bold text-white">Lost Deal Analysis</h1>
+        <p className="text-sm text-white/55">Understand why deals are lost and identify patterns</p>
       </div>
       <LostDealsAnalysis
         summary={{ totalLost, totalLostRevenue, mostCommonReason, lostRate: totalDeals > 0 ? totalLost / totalDeals : 0 }}

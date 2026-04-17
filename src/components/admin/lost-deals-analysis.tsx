@@ -45,34 +45,34 @@ export function LostDealsAnalysis({ summary, reasonDistribution, closerData, wee
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-2 mb-1">
-              <TrendingDown className="h-4 w-4 text-red-500" />
-              <p className="text-sm text-muted-foreground">Deals Lost (90d)</p>
+              <TrendingDown className="h-4 w-4 text-[#EF4444]" />
+              <p className="text-sm text-white/55">Deals Lost (90d)</p>
             </div>
-            <p className="text-2xl font-bold text-red-600">{summary.totalLost}</p>
+            <p className="text-2xl font-bold text-[#EF4444]">{summary.totalLost}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-2 mb-1">
-              <DollarSign className="h-4 w-4 text-red-500" />
-              <p className="text-sm text-muted-foreground">Lost Revenue</p>
+              <DollarSign className="h-4 w-4 text-[#EF4444]" />
+              <p className="text-sm text-white/55">Lost Revenue</p>
             </div>
-            <p className="text-2xl font-bold text-red-600">{formatCurrency(summary.totalLostRevenue)}</p>
+            <p className="text-2xl font-bold text-[#EF4444]">{formatCurrency(summary.totalLostRevenue)}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground mb-1">Most Common Reason</p>
+            <p className="text-sm text-white/55 mb-1">Most Common Reason</p>
             <p className="text-lg font-bold">{summary.mostCommonReason}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-2 mb-1">
-              {summary.lostRate > 0.1 && <AlertTriangle className="h-4 w-4 text-red-500" />}
-              <p className="text-sm text-muted-foreground">Lost Rate</p>
+              {summary.lostRate > 0.1 && <AlertTriangle className="h-4 w-4 text-[#EF4444]" />}
+              <p className="text-sm text-white/55">Lost Rate</p>
             </div>
-            <p className={cn("text-2xl font-bold", summary.lostRate > 0.1 ? "text-red-600" : "text-gray-900")}>
+            <p className={cn("text-2xl font-bold", summary.lostRate > 0.1 ? "text-[#EF4444]" : "text-white")}>
               {formatPercent(summary.lostRate)}
             </p>
             {summary.lostRate > 0.1 && <Badge variant="destructive" className="mt-1">Above 10% threshold</Badge>}
@@ -99,7 +99,7 @@ export function LostDealsAnalysis({ summary, reasonDistribution, closerData, wee
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <p className="text-center text-muted-foreground py-8">No lost deals data</p>
+              <p className="text-center text-white/55 py-8">No lost deals data</p>
             )}
           </CardContent>
         </Card>
@@ -122,7 +122,7 @@ export function LostDealsAnalysis({ summary, reasonDistribution, closerData, wee
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <p className="text-center text-muted-foreground py-8">No data</p>
+              <p className="text-center text-white/55 py-8">No data</p>
             )}
           </CardContent>
         </Card>
@@ -172,13 +172,13 @@ export function LostDealsAnalysis({ summary, reasonDistribution, closerData, wee
                   <TableCell>{formatDate(d.date_closed)}</TableCell>
                   <TableCell>{d.student_name}</TableCell>
                   <TableCell>{d.closer_name}</TableCell>
-                  <TableCell className="text-red-600">{formatCurrency(d.deal_value)}</TableCell>
+                  <TableCell className="text-[#EF4444]">{formatCurrency(d.deal_value)}</TableCell>
                   <TableCell><Badge variant="outline">{d.lost_reason}</Badge></TableCell>
-                  <TableCell className="text-sm text-muted-foreground max-w-xs truncate">{d.notes || "—"}</TableCell>
+                  <TableCell className="text-sm text-white/55 max-w-xs truncate">{d.notes || "—"}</TableCell>
                 </TableRow>
               ))}
               {deals.length === 0 && (
-                <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">No lost deals</TableCell></TableRow>
+                <TableRow><TableCell colSpan={6} className="text-center text-white/55 py-8">No lost deals</TableCell></TableRow>
               )}
             </TableBody>
           </Table>

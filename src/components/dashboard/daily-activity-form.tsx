@@ -159,24 +159,24 @@ export function DailyActivityForm({
           {/* Read-only deal stats for closers */}
           {role === "closer" && dealStats && (
             <div className="rounded-lg border bg-muted/30 p-4">
-              <p className="text-sm font-medium text-muted-foreground mb-3">
+              <p className="text-sm font-medium text-white/55 mb-3">
                 Today&apos;s Deal Stats (auto-calculated from Deals)
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div>
-                  <p className="text-xs text-muted-foreground">Deals Closed</p>
+                  <p className="text-xs text-white/55">Deals Closed</p>
                   <p className="text-xl font-bold">{dealStats.deals_closed}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Cash Collected</p>
+                  <p className="text-xs text-white/55">Cash Collected</p>
                   <p className="text-xl font-bold text-green-600">{formatCurrency(dealStats.cash_collected)}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">PIF Deals</p>
+                  <p className="text-xs text-white/55">PIF Deals</p>
                   <p className="text-xl font-bold">{dealStats.pif_deals}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Payment Plan</p>
+                  <p className="text-xs text-white/55">Payment Plan</p>
                   <p className="text-xl font-bold">{dealStats.payment_plan_deals}</p>
                 </div>
               </div>

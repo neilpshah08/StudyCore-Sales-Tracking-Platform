@@ -58,19 +58,19 @@ interface MetricRow {
 }
 
 function getColorClass(value: number, benchmark: number): string {
-  if (benchmark === 0) return "bg-gray-400"
+  if (benchmark === 0) return "bg-white/15"
   const ratio = value / benchmark
-  if (ratio >= 1) return "bg-green-500"
-  if (ratio >= 0.85) return "bg-yellow-500"
-  return "bg-red-500"
+  if (ratio >= 1) return "progress-fill-green"
+  if (ratio >= 0.85) return "progress-fill-yellow"
+  return "progress-fill-red"
 }
 
 function getTextColorClass(value: number, benchmark: number): string {
-  if (benchmark === 0) return "text-gray-600"
+  if (benchmark === 0) return "text-white/60"
   const ratio = value / benchmark
-  if (ratio >= 1) return "text-green-600"
-  if (ratio >= 0.85) return "text-yellow-600"
-  return "text-red-600"
+  if (ratio >= 1) return "text-[#10B981]"
+  if (ratio >= 0.85) return "text-[#F59E0B]"
+  return "text-[#EF4444]"
 }
 
 function buildSetterMetrics(
@@ -230,22 +230,22 @@ function MetricItem({ metric }: { metric: MetricRow }) {
       : null
 
   return (
-    <div className="space-y-2 py-3 border-b last:border-b-0">
+    <div className="space-y-2 py-3 border-b border-white/8 last:border-b-0">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-foreground">{metric.label}</span>
+        <span className="text-sm font-medium text-white/85">{metric.label}</span>
         <div className="flex items-center gap-2">
           <span
             className={cn(
-              "text-sm font-semibold",
+              "text-sm font-semibold metric-number",
               metric.benchmark > 0
                 ? getTextColorClass(metric.value, metric.benchmark)
-                : "text-foreground"
+                : "text-white"
             )}
           >
             {metric.displayValue}
           </span>
           {metric.benchmark > 0 && (
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-white/45 metric-number">
               / {metric.displayBenchmark}
             </span>
           )}
@@ -263,17 +263,17 @@ function MetricItem({ metric }: { metric: MetricRow }) {
       {goalProgress !== null && (
         <div className="space-y-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-muted-foreground">
-              Personal goal: {metric.isCurrency ? formatCurrency(metric.goalValue!) : metric.goalValue}
+            <span className="text-xs text-white/55">
+              Personal goal: <span className="metric-number">{metric.isCurrency ? formatCurrency(metric.goalValue!) : metric.goalValue}</span>
             </span>
-            <span className="text-xs text-blue-600 font-medium">
+            <span className="text-xs text-[#60A5FA] font-medium metric-number">
               {Math.round(goalProgress)}%
             </span>
           </div>
           <Progress
             value={goalProgress}
             className="h-1.5"
-            indicatorClassName="bg-blue-500"
+            indicatorClassName="progress-fill-blue"
           />
         </div>
       )}

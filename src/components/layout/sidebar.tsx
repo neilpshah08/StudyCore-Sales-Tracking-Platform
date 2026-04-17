@@ -161,14 +161,16 @@ export function Sidebar({ user }: SidebarProps) {
   };
 
   const sidebarContent = (
-    <div className="flex h-full flex-col bg-[#1B2A4A]">
+    <div className="flex h-full flex-col glass-sidebar">
       {/* Brand */}
-      <div className="flex h-16 items-center justify-between px-6">
+      <div className="flex h-16 items-center justify-between px-6 border-b border-white/8">
         <Link
           href={user.role === "admin" ? "/admin" : "/dashboard"}
-          className="text-xl font-bold text-white"
+          className="font-display text-xl font-bold tracking-tight"
         >
-          StudyCore
+          <span className="bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
+            StudyCore
+          </span>
         </Link>
         {/* Close button on mobile */}
         <button
@@ -197,10 +199,10 @@ export function Sidebar({ user }: SidebarProps) {
                 <button
                   onClick={() => toggleSection(item.label)}
                   className={cn(
-                    "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                    "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
                     active || childActive
-                      ? "bg-white/15 text-white"
-                      : "text-white/70 hover:bg-white/10 hover:text-white"
+                      ? "nav-active"
+                      : "text-white/70 hover:bg-white/8 hover:text-white"
                   )}
                 >
                   <span className="flex items-center gap-3">
@@ -219,10 +221,10 @@ export function Sidebar({ user }: SidebarProps) {
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                    "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
                     active
-                      ? "bg-white/15 text-white"
-                      : "text-white/70 hover:bg-white/10 hover:text-white"
+                      ? "nav-active"
+                      : "text-white/70 hover:bg-white/8 hover:text-white"
                   )}
                 >
                   <Icon className="h-5 w-5" />
@@ -232,7 +234,7 @@ export function Sidebar({ user }: SidebarProps) {
 
               {/* Sub-items */}
               {hasChildren && isExpanded && (
-                <div className="ml-4 mt-1 space-y-1">
+                <div className="ml-4 mt-1 space-y-1 border-l border-white/8 pl-2">
                   {item.children!.map((child) => {
                     const ChildIcon = child.icon;
                     const childIsActive = isActive(child.href);
@@ -242,10 +244,10 @@ export function Sidebar({ user }: SidebarProps) {
                         href={child.href}
                         onClick={() => setMobileOpen(false)}
                         className={cn(
-                          "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+                          "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200",
                           childIsActive
-                            ? "bg-white/15 text-white"
-                            : "text-white/60 hover:bg-white/10 hover:text-white"
+                            ? "nav-active"
+                            : "text-white/55 hover:bg-white/8 hover:text-white"
                         )}
                       >
                         <ChildIcon className="h-4 w-4" />
@@ -261,10 +263,10 @@ export function Sidebar({ user }: SidebarProps) {
       </nav>
 
       {/* User info */}
-      <div className="border-t border-white/10 p-4">
-        <div className="flex items-center gap-3">
+      <div className="border-t border-white/8 p-4">
+        <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/5 p-2.5 backdrop-blur-md">
           <Avatar className="h-9 w-9">
-            <AvatarFallback className="bg-white/20 text-sm text-white">
+            <AvatarFallback className="bg-gradient-to-br from-[#3B82F6]/40 to-[#6366F1]/40 text-sm text-white border-white/10">
               {getInitials(user.full_name)}
             </AvatarFallback>
           </Avatar>
@@ -297,7 +299,7 @@ export function Sidebar({ user }: SidebarProps) {
       {/* Mobile hamburger button */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="fixed left-4 top-4 z-40 rounded-lg bg-[#1B2A4A] p-2 text-white shadow-lg lg:hidden"
+        className="fixed left-4 top-4 z-40 rounded-xl border border-white/10 bg-white/8 p-2 text-white shadow-[0_0_20px_rgba(0,0,0,0.3)] backdrop-blur-xl lg:hidden"
         aria-label="Open menu"
       >
         <Menu className="h-5 w-5" />
@@ -306,7 +308,7 @@ export function Sidebar({ user }: SidebarProps) {
       {/* Mobile overlay */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm lg:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}

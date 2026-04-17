@@ -59,8 +59,8 @@ export default async function FulfillmentPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#1B2A4A]">Fulfillment Tracker</h1>
-        <p className="text-sm text-muted-foreground">Monitor delivery and identify at-risk students</p>
+        <h1 className="text-2xl font-bold text-white">Fulfillment Tracker</h1>
+        <p className="text-sm text-white/55">Monitor delivery and identify at-risk students</p>
       </div>
       <FulfillmentDashboard
         summary={{ totalActiveStudents: totalActive, avgDaysToFirstSession: Math.round(avgDaysToFirst * 10) / 10, onboardingDelayCount: onboardingDelay, atRiskCount: atRisk }}
